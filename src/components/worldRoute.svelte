@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
   
-    let canvas;
-    let context;
+    let canvas: HTMLCanvasElement;
+    let context: CanvasRenderingContext2D;
     let geojson = {};
   
     const londonLonLat = [0.1278, 51.5074];
@@ -16,21 +16,38 @@
     let speedAdjustment = calculateSpeedAdjustment(route);
   
     onMount(async () => {
-      context = canvas.getContext('2d');
-      
-      const projection = d3.geoOrthographic()
-        .scale(200)
-        .rotate([30, -45])
-        .translate([400, 300]);
+      const canvasContext = canvas.getContext('2d');
+  if (canvasContext) {
+    context = canvasContext;
+  } else {
+    console.error('Canvas context is null.');
+  }
   
-      const geoGenerator = d3.geoPath()
-        .projection(projection)
-        .pointRadius(3)
-        .context(context);
+  const route = [londonLonLat, newYorkLonLat, laLonLat];
+
+const projection = d3.geoAzimuthalEqualArea();
+// Use fitSize to set the scale and translation of the projection to fit the route within the canvas size
+const buffer = 100; // Adjust the buffer size as needed
+
+
+projection.fitExtent([[buffer, buffer], [800-buffer, 600-buffer]], { type: "LineString", coordinates: route });
+    const geoGenerator = d3.geoPath()
+      .projection(projection)
+      .pointRadius(3)
+      .context(context);
+
+      
   
       geojson = await d3.json('https://gist.githubusercontent.com/d3indepth/f28e1c3a99ea6d84986f35ac8646fac7/raw/c58cede8dab4673c91a3db702d50f7447b373d98/ne_110m_land.json');
   
+
       function update() {
+
+        if (!canvas) {
+    console.error('Canvas is not initialized.');
+    return;
+  }
+
         context.clearRect(0, 0, canvas.width, canvas.height);
   
         drawMap(geoGenerator);
@@ -55,7 +72,7 @@
       update();
     });
   
-    function calculateSpeedAdjustment(points) {
+    function calculateSpeedAdjustment(points: number[][]) {
       let distances = [];
       for (let i = 0; i < points.length - 1; i++) {
         let distance = d3.geoDistance(points[i], points[i + 1]);
@@ -65,7 +82,7 @@
       return distances.map(d => 0.01 * (maxDistance / d));
     }
   
-    function drawMap(geoGenerator) {
+    function drawMap(geoGenerator: any) {
       context.lineWidth = 0.5;
       context.strokeStyle = '#bbb';
       context.beginPath();
@@ -74,13 +91,26 @@
   
       const graticule = d3.geoGraticule();
       context.beginPath();
-      context.strokeStyle = '#444';
+      context.strokeStyle = '#222';
       geoGenerator(graticule());
       context.stroke();
+
+      context.beginPath();
+    context.fillStyle = '#3ae0cd'; // Change color as needed
+    route.forEach((point) => {
+        const circleGenerator = d3.geoCircle()
+            .center([point[0], point[1]]) // Set the center of the circle to the lon/lat coordinates of the point
+            .radius(0.3); // Set the radius of the circle
+
+        const circle = circleGenerator();
+        geoGenerator(circle);
+    });
+    context.fill();
+
     }
   
     // Function to draw lines connecting locations
-    function drawLines(geoGenerator) {
+    function drawLines(geoGenerator: any) {
       context.beginPath();
       context.strokeStyle = '#3ae0cd'; // Change color as needed
       route.forEach((point, i) => {
@@ -97,7 +127,7 @@
       context.stroke();
     }
   
-    function drawMovingPoint(geoGenerator) {
+    function drawMovingPoint(geoGenerator: any) {
       context.beginPath();
       context.fillStyle = '#3ae0cd';
       let interpolatedPoint = geoInterpolator(u);
@@ -106,5 +136,5 @@
     }
   </script>
   
-  <canvas class="bg-black rounded-tl-[50px] rounded-bl-[50px]" bind:this={canvas} width="800" height="600"></canvas>
+  <canvas class="bg-black rounded-tl-[24px] rounded-bl-[24px]" bind:this={canvas} width="800" height="600"></canvas>
   
