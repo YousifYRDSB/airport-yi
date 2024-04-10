@@ -9,7 +9,7 @@
 import { onMount } from 'svelte';
 	import WorldRoute from '../components/worldRoute.svelte';
 	import {loadJSON} from "../functions/DO_NOT_TOUCH"
-	import {mergeSort} from "../functions/mergesort"
+	import {mergeSort, search} from "../functions/mergesort"
 
 	interface Data {
   continent: string[];
@@ -29,6 +29,7 @@ onMount(async () => {
 	console.log(data); 
 	console.log(data.ident);
 	console.log(mergeSort(data.name))
+	console.log(search(data.name, 'Buol Airport'))
 })
 
 				

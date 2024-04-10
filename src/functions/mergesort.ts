@@ -30,3 +30,27 @@ function merge<T>(arr1: T[], arr2: T[]): T[] {
     //Combine!
     return merge(left, right);
   }
+
+// function tagretMatch(){
+//   for
+// }
+
+
+
+export function search<T>(arr: T[], target:T):T|undefined{
+  const LENGTH = arr.length; 
+  let L=0; 
+  let R= LENGTH -1; 
+
+  while(L<= R){
+    const MID = Math.floor((L+R)/2);
+    if(arr[MID] < target){
+      L = MID + 1; 
+    }else if (arr[MID] > target){
+      R = MID  -1 ;
+    }else{
+      return arr[MID]; 
+    }
+    return undefined; 
+  }
+}
