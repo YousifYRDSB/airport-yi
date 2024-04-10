@@ -9,6 +9,7 @@
 import { onMount } from 'svelte';
 	import WorldRoute from '../components/worldRoute.svelte';
 	import {loadJSON} from "../functions/DO_NOT_TOUCH"
+	import {mergeSort} from "../functions/mergesort"
 
 	interface Data {
   continent: string[];
@@ -27,6 +28,7 @@ onMount(async () => {
 	//This below just shows you how to access the data. You can remove these.
 	console.log(data); 
 	console.log(data.ident);
+	console.log(mergeSort(data.name))
 })
 
 				
