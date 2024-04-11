@@ -31,9 +31,29 @@ function merge<T>(arr1: T[], arr2: T[]): T[] {
     return merge(left, right);
   }
 
-// function tagretMatch(){
-//   for
-// }
+  //change to arr, target, query
+  //use different displacement variables for the left and right side, the match will not always be symmetric
+  export function targetMatch<T>(target: any, arr:any[]): T[]{
+    let index: number = arr.findIndex(target);
+    let fullarray: T[] = [];
+    let displacer: number = 0;
+  
+    while(arr[index - displacer].splice(0, 1) === target.splice(0,1)){
+      fullarray.push(arr[index - displacer]);
+  
+      displacer ++;
+  
+    }
+  
+    while(arr[index + displacer].splice(0, 1) === target.splice(0,1)){
+      fullarray.push(arr[index - displacer]);
+  
+      displacer ++;
+    }
+  
+    return fullarray;
+  
+  }
 
 
 

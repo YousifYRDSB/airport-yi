@@ -28,7 +28,10 @@ onMount(async () => {
 	//This below just shows you how to access the data. You can remove these.
 	console.log(data); 
 	console.log(data.ident);
-	console.log(mergeSort(data.name))
+	let startTime = performance.now();
+    console.log(mergeSort(data.name));
+    let endTime = performance.now();
+    console.log(`Operation took ${endTime - startTime} milliseconds`);
 	console.log(search(data.name, 'Buol Airport'))
 })
 
