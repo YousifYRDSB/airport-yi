@@ -31,46 +31,48 @@ function merge<T>(arr1: T[], arr2: T[]): T[] {
     return merge(left, right);
   }
 
-  //change to arr, target, query
-  //use different displacement variables for the left and right side, the match will not always be symmetric
-  export function targetMatch<T>(target: any, arr:any[]): T[]{
-    let index: number = arr.findIndex(target);
-    let fullarray: T[] = [];
-    let displacer: number = 0;
+
+export function targetMatch<T>(target: any, arr:any[]): T[]{
+  let index: number = arr.findIndex(target); 
+  let fullArray: T[] = []; 
+  let displacerLeft: number = 0; 
+  let displacerRight: number =0; 
   
-    while(arr[index - displacer].splice(0, 1) === target.splice(0,1)){
-      fullarray.push(arr[index - displacer]);
-  
-      displacer ++;
-  
-    }
-  
-    while(arr[index + displacer].splice(0, 1) === target.splice(0,1)){
-      fullarray.push(arr[index - displacer]);
-  
-      displacer ++;
-    }
-  
-    return fullarray;
-  
+  while(arr[index - displacerLeft].splice(0, 1) === target.splcie(0,1)){
+    fullArray.push(arr[index - displacerLeft]); 
+    displacerLeft ++; 
   }
 
+  while(arr[index + displacerRight].splice(0, 1) === target.splcie(0,1)){
+    fullArray.push(arr[index - displacerRight]); 
+    displacerRight ++; 
+  }
 
+  return fullArray; 
+}
 
-export function search<T>(arr: T[], target:T):T|undefined{
+export function search<T>(arr: T[], target:any):T|undefined{
   const LENGTH = arr.length; 
-  let L=0; 
-  let R= LENGTH -1; 
+  let left =0; 
+  let right = LENGTH -1; 
 
-  while(L<= R){
-    const MID = Math.floor((L+R)/2);
+  while(left <= right){
+    const MID = Math.floor((left + right)/2);
     if(arr[MID] < target){
-      L = MID + 1; 
+      left = MID + 1; 
     }else if (arr[MID] > target){
-      R = MID  -1 ;
+      right = MID  -1 ;
     }else{
       return arr[MID]; 
     }
     return undefined; 
   }
+
 }
+
+
+
+
+
+
+
