@@ -35,16 +35,17 @@ function merge<T>(arr1: T[], arr2: T[]): T[] {
 export function targetMatch<T>(target: any, arr:any[]): T[]{
   let index: number = arr.findIndex(target); 
   let fullArray: T[] = []; 
-  let displacer: number = 0; 
+  let displacerLeft: number = 0; 
+  let displacerRight: number =0; 
   
-  while(arr[index - displacer].splice(0, 1) === target.splcie(0,1)){
-    fullArray.push(arr[index - displacer]); 
-    displacer ++; 
+  while(arr[index - displacerLeft].splice(0, 1) === target.splcie(0,1)){
+    fullArray.push(arr[index - displacerLeft]); 
+    displacerLeft ++; 
   }
 
-  while(arr[index + displacer].splice(0, 1) === target.splcie(0,1)){
-    fullArray.push(arr[index - displacer]); 
-    displacer ++; 
+  while(arr[index + displacerRight].splice(0, 1) === target.splcie(0,1)){
+    fullArray.push(arr[index - displacerRight]); 
+    displacerRight ++; 
   }
 
   return fullArray; 
@@ -68,6 +69,8 @@ export function search<T>(arr: T[], target:any):T|undefined{
   }
 
 }
+
+
 
 
 
