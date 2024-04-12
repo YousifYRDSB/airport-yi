@@ -6,9 +6,9 @@
 	// import '../app.postcss';
 	import Table from '../components/table.svelte';
 	import {RadioGroup, RadioItem} from '@skeletonlabs/skeleton';
-import { onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import WorldRoute from '../components/worldRoute.svelte';
-	import {loadJSON} from "../functions/DO_NOT_TOUCH"
+	import {loadJSON} from "../functions/DO_NOT_TOUCH"	
 	import {mergeSort, search} from "../functions/mergesort"
 
 	interface Data {
