@@ -2,7 +2,9 @@
     import Table from '../../components/table.svelte';
 </script>
 
-<p> ALL AIRPORTS </p> 
+<p style="fontsize: 50px"> ALL AIRPORTS </p> 
+<button></button>
+
 <div>
     <Table/>
 </div>

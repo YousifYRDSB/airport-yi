@@ -8,10 +8,9 @@
 	import {RadioGroup, RadioItem} from '@skeletonlabs/skeleton';
 import { onMount } from 'svelte';
 	import WorldRoute from '../components/worldRoute.svelte';
-	import {loadJSON} from "../functions/DO_NOT_TOUCH"
 	import {mergeSort, search} from "../functions/mergesort"
 
-	interface Data {
+	interface AirportData {
   continent: string[];
   ident: string[];
   iso_country: string[];
@@ -21,29 +20,42 @@ import { onMount } from 'svelte';
   name: string[];
   type: string[];
 }
+console.log('test')
 
-onMount(async () => {
-	const data: Data = await loadJSON("/src/DO_NOT_TOUCH/data.json") as Data; //Don't delete this line. All your data is here. It does take a few seconds for Replit to load the data because it's so large.
-	
-	//This below just shows you how to access the data. You can remove these.
-	console.log(data); 
-	console.log(data.ident);
+    /** @type {import('./$types').LayoutData} */
+	export let data;
+	let name = 'unknown'
+	console.log('test')
+	let sortedNames = []
+
+	const airportData: AirportData = data.airports as AirportData
+	onMount( () => {
+		name='mount'
+	console.log(airportData); 
+	console.log(airportData.ident);
+    sortedNames = mergeSort(airportData.name);
 	let startTime = performance.now();
-    console.log(mergeSort(data.name));
+	console.log(search(sortedNames, 'Buol Airport'))
     let endTime = performance.now();
     console.log(`Operation took ${endTime - startTime} milliseconds`);
-	console.log(search(data.name, 'Buol Airport'))
 })
+
+let searchInput = ''
+function searchAirport(query: string){
+	console.log('searching')
+	name = search(sortedNames, query)
+}
 
 				
 </script>
 
 <div class="container h-full mx-auto flex justify-center items-center">
+	{name}
 	<div class="space-y-10 text-center flex flex-col items-center">
 		<h2 class="h2">Airport Lookup</h2>
 		<div class="relative flex items-center w-full">
-			<input class="input p-[15px] pl-[15px] pr-[100px] w-full focus:outline-none" type="search" name="demo" placeholder="Search..." />
-			<button class="absolute right-0 top-0 h-full px-4 text-white bg-[#d4163c] hover:bg-red-700 rounded-r-[24px] min-w-[10%]">
+			<input bind:value={searchInput} class="input p-[15px] pl-[15px] pr-[100px] w-full focus:outline-none" type="search" name="demo" placeholder="Search..." />
+			<button on:click={() => searchAirport(searchInput)} class="absolute right-0 top-0 h-full px-4 text-white bg-[#d4163c] hover:bg-red-700 rounded-r-[24px] min-w-[10%]">
 			  Search
 			</button>
 		  </div>

@@ -44,7 +44,7 @@ projection.fitExtent([[buffer, buffer], [800-buffer, 600-buffer]], { type: "Line
       function update() {
 
         if (!canvas) {
-    console.error('Canvas is not initialized.');
+    // console.error('Canvas is not initialized.');
     return;
   }
 
