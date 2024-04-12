@@ -65,8 +65,8 @@ export function search<T>(arr: T[], target:any):T|undefined{
     }else{
       return arr[MID]; 
     }
-    return undefined; 
   }
+  return undefined; 
 
 }
 

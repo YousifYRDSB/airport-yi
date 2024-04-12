@@ -1,4 +1,4 @@
-// Load JSON text from server hosted file and return JSON parsed object
+
 export function loadJSON(filePath: string): any {
   // Load json file;
   const json: string | null = loadTextFileAjaxSync(
@@ -12,6 +12,8 @@ export function loadJSON(filePath: string): any {
   }
   return null;
 }
+
+
 
 // Load text with Ajax synchronously: takes path to file and optional MIME type
 function loadTextFileAjaxSync(filePath: string, mimeType: any): string | null {
