@@ -10,8 +10,8 @@ function sliceArray<T>(arr: T[], start: number = 0, end: number = arr.length): T
   return result;
 }
 
-function arrayPush<T>(arg: T, arr: T[]): void{
-    return arr[...arr, arg];  
+function arrayPush<T>(arg: T, arr: T[]): T[] {
+    return [...arr, arg];
 }
 
 
