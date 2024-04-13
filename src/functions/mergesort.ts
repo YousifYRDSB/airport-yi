@@ -1,35 +1,112 @@
-function merge<T>(arr1: T[], arr2: T[]): T[] {
-    let sorted: T[] = [];
-  
-    while (arr1.length !== 0 && arr2.length !== 0) {
-      if (arr1[0] < arr2[0]) {
-        sorted.push(arr1.shift());
-      } else {
-        sorted.push(arr2.shift());
-      }
-    }
-  
-    return [...sorted, ...arr1, ...arr2];
+
+
+function sliceArray<T>(arr: T[], start: number = 0, end: number = arr.length): T[] {
+  if (start >= end) return [];
+  const result: T[] = new Array(end - start);
+  for (let i = start, j = 0; i < end; i++, j++) {
+      result[j] = arr[i];
   }
+
+  return result;
+}
+
+
+
+
+// function merge<T>(left: T[], right: T[], arr: T[]): any {
+//   let i: number = 0;
+//   let j: number = 0;
+
+//   while (i < left.length && j < right.length) { 
+    
+//     if (left[i] < right[j]) {
+//       arr[i + j] = left[i]; 
+//       i++;
+//     } else {
+//       arr[i + j] = right[j]; 
+//       j++;
+//     }
+//   }
+
+//   return [...sliceArray(arr, 0, i + j), ...sliceArray(left, i), ...sliceArray(right, j)]; 
+// }
   
-  export function mergeSort<T>(arr: T[]): T[] {
-    //Base case
-    if (arr.length <= 1) {
-      return arr;
-    }
+//   export function mergeSort<T>(arr: T[]): T[] {
+//     //Base case
+//     if (arr.length <= 1) {
+//       return arr;
+//     }
   
-    //Divide!
-    let mid: number = Math.floor(arr.length / 2); //It doesn't really matter if it is floor or ceil here.
-    let left: T[] = arr.slice(0, mid); //First half
-    let right: T[] = arr.slice(mid); //Second half
+//     //Divide!
+//     const MID: number = Math.floor(arr.length / 2); 
+//     let left: T[] = sliceArray(arr, 0, MID); 
+//     let right: T[] = sliceArray(arr, MID); 
   
-    //Conquer!
-    left = mergeSort(left);
-    right = mergeSort(right);
+    
+//     left = mergeSort(left);
+//     right = mergeSort(right);
   
-    //Combine!
-    return merge(left, right);
+    
+//     return merge(left, right, arr);
+//   }
+
+
+
+export function mergeSort<T>(arr: T[]): number[] {
+  // Initialize indices array
+  const indices: number[] = new Array(arr.length);
+  for (let i = 0; i < arr.length; i++) {
+      indices[i] = i;
   }
+  // Start recursive sort on the entire array of indices
+  return recursiveMergeSort(arr, indices);
+}
+
+
+// Function to recursively sort indices based on the values they point to in arr
+function recursiveMergeSort(arr: any[], indices: number[]): number[] {
+  // console.log(indices.length)
+    if (indices.length <= 1) {
+        // return sliceArray(indices, start, end)
+        return indices
+    }
+
+    const mid = Math.floor(indices.length / 2);
+    let left = sliceArray(indices, 0, mid) //First half
+    let right = sliceArray(indices, mid) //Second half
+     left = recursiveMergeSort(arr, left);
+     right = recursiveMergeSort(arr, right);
+
+    return merge(arr, left, right, indices);
+}
+
+function merge<T>( arr: any[], left: number[], right: number[], indices: number[]): number[] {
+  let i: number = 0;
+  let j: number = 0;
+
+  for (let k = 0; k < indices.length; k++) {
+    if (i >= left.length) {
+      //If left is empty
+      indices[k] = right[j]; //Dump in the values from right
+      j++;
+    } else if (j >= right.length) {
+      //If right is empty
+      indices[k] = left[i]; //Dump in the values from left
+      i++;
+    } else if (arr[left[i]] < arr[right[j]]) {
+      indices[k] = left[i];
+      i++;
+    } else {
+      indices[k] = right[j];
+      j++;
+    }
+  }
+
+  return indices;
+
+}
+
+
 
 
 export function targetMatch<T>(target: any, arr:any[]): T[]{
@@ -51,22 +128,23 @@ export function targetMatch<T>(target: any, arr:any[]): T[]{
   return fullArray; 
 }
 
-export function search<T>(arr: T[], target:any):T|undefined{
+export function search<T>(arr: T[], target:any, data:any): T|null{
   const LENGTH = arr.length; 
   let left =0; 
   let right = LENGTH -1; 
 
   while(left <= right){
     const MID = Math.floor((left + right)/2);
-    if(arr[MID] < target){
+    console.log('mid', data[MID])
+    if(data[arr[MID]] < target){
       left = MID + 1; 
-    }else if (arr[MID] > target){
+    }else if (data[arr[MID]] > target){
       right = MID  -1 ;
     }else{
       return arr[MID]; 
     }
   }
-  return undefined; 
+  return null; 
 
 }
 
