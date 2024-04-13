@@ -148,28 +148,16 @@ export function search<T>(arr: T[], target:any, data:any): T|null{
 
 }
 
-let clicked: number =0; 
-export function orderAirports<T>(arr:T[]):T[] | undefined{
-  let length = arr.length; 
-  let counter: number = 0; 
-  let order:T[] = arr; 
-  if(clicked%2 === 0){
-    clicked ++; 
-    if(clicked>0){
-      for(let i=0; i<length; i++){
-        order[i] = order[counter]; 
-        return order; 
-      }
-    }
-    return order; 
-  }else{
-    counter = 0; 
-    for(let i=0; i> length; i--){
-      order[i] = order[counter]; 
-      return order; 
+// makes each colum in the table given range of airports 
+function catergorize<T>(arr: T[], main: T[], start: number, end:number):T[]{
+    const LENGTH = end-start; 
+    const category: T[] = new Array(end-start); 
+    for(let i=start; i<LENGTH; i++){
+        let index = arr[i]; 
+        category[i] = main[index]; 
     }
 
-  }
+    return category; 
 }
 
 
