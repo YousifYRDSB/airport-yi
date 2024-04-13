@@ -149,7 +149,7 @@ export function search<T>(arr: T[], target:any, data:any): T|null{
 }
 
 // makes each colum in the table given range of airports 
-function catergorize<T>(arr: T[], main: T[], start: number, end:number):T[]{
+export function catergorize<T>(arr: T[], main: T[], start: number, end:number):T[]{
     const LENGTH = end-start; 
     const category: T[] = new Array(end-start); 
     for(let i=start; i<LENGTH; i++){
