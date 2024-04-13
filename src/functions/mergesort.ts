@@ -11,7 +11,7 @@ function sliceArray<T>(arr: T[], start: number = 0, end: number = arr.length): T
 }
 
 function arrayPush<T>(arg: T, arr: T[]): void{
-    arr = arr[...arr, arg];  
+    return arr[...arr, arg];  
 }
 
 
