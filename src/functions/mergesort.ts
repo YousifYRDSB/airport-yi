@@ -10,6 +10,10 @@ function sliceArray<T>(arr: T[], start: number = 0, end: number = arr.length): T
   return result;
 }
 
+function arrayPush<T>(arg: T, arr: T[]): void{
+    arr = arr[...arr, arg];  
+}
+
 
 
 
@@ -111,17 +115,17 @@ function merge<T>( arr: any[], left: number[], right: number[], indices: number[
 
 export function targetMatch<T>(target: any, arr:any[]): T[]{
   let index: number = arr.findIndex(target); 
-  let fullArray: T[] = []; 
+  let fullArray: T[] = new Array(1); 
   let displacerLeft: number = 0; 
   let displacerRight: number =0; 
   
   while(arr[index - displacerLeft].splice(0, 1) === target.splcie(0,1)){
-    fullArray.push(arr[index - displacerLeft]); 
+    arrayPush(arr[index - displacerLeft], fullArray); 
     displacerLeft ++; 
   }
 
   while(arr[index + displacerRight].splice(0, 1) === target.splcie(0,1)){
-    fullArray.push(arr[index - displacerRight]); 
+    arrayPush(arr[index + displacerRight], fullArray); 
     displacerRight ++; 
   }
 
