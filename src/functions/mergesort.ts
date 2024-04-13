@@ -119,12 +119,12 @@ export function targetMatch<T>(target: any, arr:any[]): T[]{
   let displacerLeft: number = 0; 
   let displacerRight: number =0; 
   
-  while(arr[index - displacerLeft].splice(0, 1) === target.splcie(0,1)){
+  while(arr[index - displacerLeft].splice(0, 1) === target.splice(0,1)){
     arrayPush(arr[index - displacerLeft], fullArray); 
     displacerLeft ++; 
   }
 
-  while(arr[index + displacerRight].splice(0, 1) === target.splcie(0,1)){
+  while(arr[index + displacerRight].splice(0, 1) === target.splice(0,1)){
     arrayPush(arr[index + displacerRight], fullArray); 
     displacerRight ++; 
   }
