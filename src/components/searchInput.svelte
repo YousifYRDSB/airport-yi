@@ -6,9 +6,14 @@ let searchInput: string = ''
 let nameIndex: number = -1;
 let value: number = 0;
 
-function searchAirport(query: string){
-	nameIndex = search(data.sortedNames, query, data.airports.name)
+async function searchAirport(query: string){
+	let startTime = performance.now();
+	nameIndex = await search(data.sortedNames, query, data.airports.name)
+    let endTime = performance.now();
+	console.log(startTime, endTime)
+    console.log(`Operation took ${endTime - startTime} milliseconds`);
 	console.log('searching', nameIndex, data.airports.name[nameIndex])
+	
 }
 </script>
 

@@ -135,7 +135,6 @@ export function search<T>(arr: T[], target:any, data:any): T|null{
 
   while(left <= right){
     const MID = Math.floor((left + right)/2);
-    console.log('mid', data[MID])
     if(data[arr[MID]] < target){
       left = MID + 1; 
     }else if (data[arr[MID]] > target){
