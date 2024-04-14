@@ -12,7 +12,6 @@ function sliceArray<T>(arr: T[], start: number = 0, end: number = arr.length): T
 
 
 
-
 // function merge<T>(left: T[], right: T[], arr: T[]): any {
 //   let i: number = 0;
 //   let j: number = 0;
@@ -77,7 +76,8 @@ function recursiveMergeSort(arr: any[], indices: number[]): number[] {
      left = recursiveMergeSort(arr, left);
      right = recursiveMergeSort(arr, right);
 
-    return merge(arr, left, right, indices);
+      return merge(arr, left, right, indices);
+
 }
 
 function merge<T>( arr: any[], left: number[], right: number[], indices: number[]): number[] {
@@ -135,7 +135,7 @@ export function search<T>(arr: T[], target:any, data:any): T|null{
 
   while(left <= right){
     const MID = Math.floor((left + right)/2);
-    console.log('mid', data[MID])
+    // console.log('mid', data[MID])
     if(data[arr[MID]] < target){
       left = MID + 1; 
     }else if (data[arr[MID]] > target){

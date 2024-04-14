@@ -1,14 +1,20 @@
 <script lang='ts'>
 	import {RadioGroup, RadioItem} from '@skeletonlabs/skeleton';
-	import {mergeSort, search} from "../functions/mergesort"
-export let data;
-let searchInput: string = ''
-let nameIndex: number = -1;
+	import {mergeSort, search} from "../functions/sort-search"
+	import type { Writable } from 'svelte/store';
+
+export let data: any;
+export let searchedIndexes: Writable<number[]>;
+let searchInput: string = '' 
 let value: number = 0;
 
-function searchAirport(query: string){
-	nameIndex = search(data.sortedNames, query, data.airports.name)
-	console.log('searching', nameIndex, data.airports.name[nameIndex])
+async function searchAirport(query: string){
+	const startTime = performance.now();
+    const searchedIndex = [search(data.sortedNames, query, data.airports.name)];
+    const endTime = performance.now();
+    const elapsedTime = (endTime - startTime);
+    console.log(`The search function took ${elapsedTime} milliseconds.`);
+	searchedIndexes.set(searchedIndex);
 }
 </script>
 

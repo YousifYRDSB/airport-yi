@@ -2,7 +2,7 @@
 export const ssr = false;
 
 import { loadJSON } from '../functions/DO_NOT_TOUCH';
-import { mergeSort } from '../functions/mergesort';
+import { mergeSort } from '../functions/sort-search';
 
 interface AirportData {
         continent: string[];
