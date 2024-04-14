@@ -16,61 +16,81 @@ function arrayPush<T>(arg: T, arr: T[]): T[] {
 
 
 
+// export function mergeSort<T>(arr: T[]): number[] {
+//   // Initialize indices array
+//   const indices: number[] = new Array(arr.length);
+//   for (let i = 0; i < arr.length; i++) {
+//       indices[i] = i;
+//   }
+//   // Start recursive sort on the entire array of indices
+//   return recursiveMergeSort(arr, indices);
+// }
+
+
+// Function to recursively sort indices based on the values they point to in arr
+
 export function mergeSort<T>(arr: T[]): number[] {
-  // Initialize indices array
   const indices: number[] = new Array(arr.length);
   for (let i = 0; i < arr.length; i++) {
       indices[i] = i;
   }
-  // Start recursive sort on the entire array of indices
-  return recursiveMergeSort(arr, indices);
-}
-
-
-// Function to recursively sort indices based on the values they point to in arr
-function recursiveMergeSort(arr: any[], indices: number[]): number[] {
-  // console.log(indices.length)
-    if (indices.length <= 1) {
-        // return sliceArray(indices, start, end)
-        return indices
+  const aux: number[] = new Array(arr.length);
+  iterativeMergeSort(arr, indices, aux);
+  if (Math.ceil(Math.log2(arr.length)) % 2 !== 0) {
+    // After an odd number of total passes, copy back from aux to indices
+    for (let i = 0; i < arr.length; i++) {
+        indices[i] = aux[i];
     }
-
-    const mid = Math.floor(indices.length / 2);
-    let left = sliceArray(indices, 0, mid) //First half
-    let right = sliceArray(indices, mid) //Second half
-     left = recursiveMergeSort(arr, left);
-     right = recursiveMergeSort(arr, right);
-
-      return merge(arr, left, right, indices);
-
+  }
+  return indices;
 }
 
-function merge<T>( arr: any[], left: number[], right: number[], indices: number[]): number[] {
-  let i: number = 0;
-  let j: number = 0;
+function iterativeMergeSort<T>(arr: T[], indices: number[], aux: number[]) {
+  let n = indices.length;
+  let read = indices;   // Initially, read from indices
+  let write = aux;      // Initially, write to aux
 
-  for (let k = 0; k < indices.length; k++) {
-    if (i >= left.length) {
-      //If left is empty
-      indices[k] = right[j]; //Dump in the values from right
-      j++;
-    } else if (j >= right.length) {
-      //If right is empty
-      indices[k] = left[i]; //Dump in the values from left
-      i++;
-    } else if (arr[left[i]] < arr[right[j]]) {
-      indices[k] = left[i];
-      i++;
+  for (let size = 1; size < n; size *= 2) {
+    for (let leftStart = 0; leftStart < n - size; leftStart += 2 * size) {
+      let mid = leftStart + size - 1;
+      let rightEnd = Math.min(leftStart + 2 * size - 1, n - 1);
+      merge(arr, read, write, leftStart, mid, rightEnd);
+    }
+    // Swap read and write arrays for the next level
+    let temp = read;
+    read = write;
+    write = temp;
+  }
+
+  // Ensure the final sorted indices are in the original indices array if needed
+  if (read !== indices) {
+    for (let i = 0; i < n; i++) {
+      indices[i] = read[i];
+    }
+  }
+}
+
+function merge<T>(arr: T[], read: number[], write: number[], start: number, mid: number, end: number) {
+  let i = start;
+  let j = mid + 1;
+  let k = start;
+
+  while (i <= mid && j <= end) {
+    if (arr[read[i]] <= arr[read[j]]) {
+      write[k++] = read[i++];
     } else {
-      indices[k] = right[j];
-      j++;
+      write[k++] = read[j++];
     }
   }
 
-  return indices;
+  while (i <= mid) {
+    write[k++] = read[i++];
+  }
 
+  while (j <= end) {
+    write[k++] = read[j++];
+  }
 }
-
 
 
 

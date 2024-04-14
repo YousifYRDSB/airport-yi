@@ -14,7 +14,9 @@
     export let searchedIndexes: Writable<number[]>;
     let locations: number[][] = []
     $:{
+      if(typeof $searchedIndexes[0] === 'number')
       locations = getCoordinatesByIndex(data.airports, $searchedIndexes);
+      resize()
       
     }
     console.log(locations)
@@ -22,7 +24,7 @@
     const londonLonLat = [0.1278, 51.5074];
     const newYorkLonLat = [-74.0059, 40.7128];
     const laLonLat = [-118.2426, 34.0549];
-    let route = [londonLonLat, newYorkLonLat, laLonLat];
+    let route = [londonLonLat, newYorkLonLat, laLonLat, [-89.0059, 50.7128]];
     let currentSegment = 0;
     let geoInterpolator = d3.geoInterpolate(route[currentSegment], route[currentSegment + 1]);
     let u = 0;
@@ -41,7 +43,7 @@
   console.log("EXTENT", extent)
   }
   projection = d3.geoMercator()
-                     .fitExtent([[buffer, buffer], [width - buffer, height - buffer]], {
+                     .fitExtent([[buffer, buffer], [800 - buffer, 600 - buffer]], {
                         type: "LineString",
                         coordinates: locations
                      });

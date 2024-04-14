@@ -18,12 +18,13 @@ interface AirportData {
 /** @type {import('./$types').LayoutServerLoad} */
 export async function load() {
         const data = await loadJSON("DO_NOT_TOUCH/data.json")
-        console.log(data)
+        // console.log(data)
         
         let startTime = performance.now();
         const sortedNames = mergeSort(data.name)
         let endTime = performance.now();
         let nameSortElapsed = endTime - startTime;
+        console.log(sortedNames)
         
         startTime = performance.now();
         const sortedTypes = categorySort(data.type)
@@ -34,7 +35,6 @@ export async function load() {
         const sortedCountries = categorySort(data.iso_country)
         endTime = performance.now();
         let countrySortElapsed = endTime - startTime;
-        console.log(sortedCountries)
         return {
                 airports: data as AirportData,
                 sortedNames: sortedNames,
