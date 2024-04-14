@@ -1,20 +1,53 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
+    import { getCoordinatesByIndex } from '../functions/data-operations';
+    import type { Writable } from 'svelte/store';
+
   
     let canvas: HTMLCanvasElement;
     let context: CanvasRenderingContext2D;
     let geojson = {};
+    let projection: d3.GeoProjection;
+
+    export let data: any;
+    export let searchedIndexes: Writable<number[]>;
+    let locations: number[][] = []
+    $:{
+      locations = getCoordinatesByIndex(data.airports, $searchedIndexes);
+      
+    }
+    console.log(locations)
   
     const londonLonLat = [0.1278, 51.5074];
     const newYorkLonLat = [-74.0059, 40.7128];
     const laLonLat = [-118.2426, 34.0549];
-    const route = [londonLonLat, newYorkLonLat, laLonLat];
+    let route = [londonLonLat, newYorkLonLat, laLonLat];
     let currentSegment = 0;
     let geoInterpolator = d3.geoInterpolate(route[currentSegment], route[currentSegment + 1]);
     let u = 0;
     let speedAdjustment = calculateSpeedAdjustment(route);
   
+
+    function resize(){
+      const buffer = 100;
+      
+      let extent;
+  if(locations.length === 1){
+  extent = [
+    [locations[0][0] - 10, locations[0][1] - 10], // bottom-left corner of the rectangle
+    [locations[0][0] + 10, locations[0][1] + 10]  // top-right corner of the rectangle
+  ];
+  console.log("EXTENT", extent)
+  }
+  projection = d3.geoMercator()
+                     .fitExtent([[buffer, buffer], [width - buffer, height - buffer]], {
+                        type: "LineString",
+                        coordinates: locations
+                     });
+    }
+
+    
     onMount(async () => {
       const canvasContext = canvas.getContext('2d');
   if (canvasContext) {
@@ -30,7 +63,11 @@ const projection = d3.geoAzimuthalEqualArea();
 const buffer = 100; // Adjust the buffer size as needed
 
 
-projection.fitExtent([[buffer, buffer], [800-buffer, 600-buffer]], { type: "LineString", coordinates: route });
+
+
+
+if(locations.length > 0) 
+  projection.fitExtent([[buffer, buffer], [800-buffer, 600-buffer]], { type: "LineString", coordinates: locations });
     const geoGenerator = d3.geoPath()
       .projection(projection)
       .pointRadius(3)
@@ -53,6 +90,7 @@ projection.fitExtent([[buffer, buffer], [800-buffer, 600-buffer]], { type: "Line
         drawMap(geoGenerator);
         drawLines(geoGenerator); // Ensure lines are drawn
         drawMovingPoint(geoGenerator);
+        // resize(projection);
   
         u += speedAdjustment[currentSegment];
         if (u > 1) {
@@ -97,10 +135,10 @@ projection.fitExtent([[buffer, buffer], [800-buffer, 600-buffer]], { type: "Line
 
       context.beginPath();
     context.fillStyle = '#3ae0cd'; // Change color as needed
-    route.forEach((point) => {
+    locations.forEach((point) => {
         const circleGenerator = d3.geoCircle()
             .center([point[0], point[1]]) // Set the center of the circle to the lon/lat coordinates of the point
-            .radius(0.3); // Set the radius of the circle
+            .radius(1); // Set the radius of the circle
 
         const circle = circleGenerator();
         geoGenerator(circle);

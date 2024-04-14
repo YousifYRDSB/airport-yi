@@ -9,13 +9,17 @@
 	import {mergeSort, search} from "../functions/sort-search"
 	import SearchInput from "../components/searchInput.svelte"
 	import { writable } from 'svelte/store';
+	import PerformanceLog from '../components/showPerformance.svelte'
 
 console.log('test')
 
     /** @type {import('./$types').LayoutData} */
-	export let data;
+	export let data:any;
 	// console.log(data.airports)
 	let searchedIndexes = writable([]);
+	let performanceData = writable(data.performance);
+
+	$: console.log('Data updated', data);
 
 
 
@@ -23,15 +27,16 @@ console.log('test')
 </script>
 
 <div class="container h-full mx-auto flex justify-center items-center">
+	<PerformanceLog performanceData={$performanceData}/>
+	<div class="flex items-start">
 	<div class="space-y-10 text-center flex flex-col items-center">
 		<h2 class="h2">Airport Lookup</h2>
-		<SearchInput data={data} {searchedIndexes}/>
-		  {$searchedIndexes} 
-		<div class="flex items-start">
-
-		<WorldRoute/>
-		<Table data={data} {searchedIndexes}/>
-		
+		<SearchInput data={data} performanceData={performanceData} {searchedIndexes}/> 
+		<div class="flex">
+			<WorldRoute data={data} {searchedIndexes}/>
+			<Table data={data} {searchedIndexes}/>
+		</div>
+			
 
 		</div>
 		

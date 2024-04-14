@@ -5,15 +5,36 @@
 
 export let data: any;
 export let searchedIndexes: Writable<number[]>;
+export let performanceData: Writable<any>;
 let searchInput: string = '' 
-let value: number = 0;
+let searchType: string = "id";
 
-async function searchAirport(query: string){
+async function searchAirport(query: string, searchType: string) {
+	let searchedIndex: number[] = [];
+
 	const startTime = performance.now();
-    const searchedIndex = [search(data.sortedNames, query, data.airports.name)];
-    const endTime = performance.now();
+	if(searchType === "name")
+    searchedIndex = [search(query, data.airports.name, data.sortedNames)];
+	else if(searchType === "id")
+	searchedIndex = [search(query, data.airports.ident)];
+	else if(searchType == "type")
+	searchedIndex = data.sortedTypes[query];
+	else if(searchType == "country")
+	searchedIndex = data.sortedCountries[query];
+const endTime = performance.now();
+
+
+	console.log("found", searchedIndex)
+
+
     const elapsedTime = (endTime - startTime);
     console.log(`The search function took ${elapsedTime} milliseconds.`);
+	let performanceTemp = [...$performanceData]
+	console.log(performanceTemp)
+	performanceTemp[1] = [...performanceTemp[1], elapsedTime]
+	performanceTemp[0] = [...performanceTemp[0], "search"]
+	performanceData.set(performanceTemp)
+	console.log(performanceTemp)
 	searchedIndexes.set(searchedIndex);
 }
 </script>
@@ -21,13 +42,14 @@ async function searchAirport(query: string){
 <div>
     <div class="relative flex items-center w-full">
 			<input bind:value={searchInput} class="input p-[15px] pl-[15px] pr-[100px] w-full focus:outline-none" type="search" name="demo" placeholder="Search..." />
-			<button on:click={() => searchAirport(searchInput)} class="absolute right-0 top-0 h-full px-4 text-white bg-[#d4163c] hover:bg-red-700 rounded-r-[24px] min-w-[10%]">
+			<button on:click={() => searchAirport(searchInput, searchType)} class="absolute right-0 top-0 h-full px-4 text-white bg-[#d4163c] hover:bg-red-700 rounded-r-[24px] min-w-[10%]">
 			  Search
 			</button>
 		  </div>
 		  <RadioGroup>
-			  <RadioItem bind:group={value} name="justify" value={0}>type</RadioItem>
-			  <RadioItem bind:group={value} name="justify" value={1}>name</RadioItem>
-			  <RadioItem bind:group={value} name="justify" value={2}>id</RadioItem>
+			  <RadioItem bind:group={searchType} name="justify" value={"id"}>id</RadioItem>
+			  <RadioItem bind:group={searchType} name="justify" value={"name"}>name</RadioItem>
+			  <RadioItem bind:group={searchType} name="justify" value={"type"}>type</RadioItem>
+			  <RadioItem bind:group={searchType} name="justify" value={"country"}>country</RadioItem>
 			  </RadioGroup>
 </div>

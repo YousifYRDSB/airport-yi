@@ -1,41 +1,64 @@
 <script lang="ts">
-	import { Table } from '@skeletonlabs/skeleton';
-	import type { TableSource } from '@skeletonlabs/skeleton';
+import { Table } from '@skeletonlabs/skeleton';
+import type { TableSource, PaginationSettings } from '@skeletonlabs/skeleton';
 	import { tableMapperValues } from '@skeletonlabs/skeleton'; 
+	import {Paginator} from '@skeletonlabs/skeleton';
 	import { getAirportInfoByIndex } from '../functions/data-operations';
-	import { writable } from 'svelte/store';
+	import type { Writable } from 'svelte/store';
   
 	export let data: any;
 	export let searchedIndexes: Writable<number[]>;
   
-	let sourceData = []; // Initialize sourceData as an empty array
-  
-	// Reactive statement to update sourceData whenever searchedIndexes changes
-	$: {
-		console.log($searchedIndexes)
-		if(data)
-	  sourceData = getAirportInfoByIndex(data.airports, $searchedIndexes);
-	  updateTable(); // Function to update the table data
-	  console.log(sourceData)
-	}
-  
-	function updateTable() {
-	  tableSimple.head = ['Name', 'Id', 'Type', 'Iso_country', 'Iso_region', 'Longitude', 'Latitude'];
-	  tableSimple.body = tableMapperValues(sourceData, ['name', 'ident', 'type', 'iso_country', 'iso_region', 'longitude_deg', 'latitude_deg']);
-	  tableSimple.meta = tableMapperValues(sourceData, ['name', 'ident', 'type', 'iso_country', 'iso_region', 'longitude_deg', 'latitude_deg']);
-	  tableSimple.foot = ['Total', '', `<code class="code">${sourceData.length}</code>`];
-	}
-  
-	// Initialize the table structure
+	let sourceData: any = []; // Initialize sourceData as an empty array
+	let paginatedSource: any = []; // Initialize paginatedSource as an empty array
 	let tableSimple: TableSource = {
 	  head: [],
 	  body: [],
-	  meta: [],
+	  meta: [], 
 	  foot: []
 	};
+  
+	// Reactive statement to update sourceData whenever searchedIndexes changes
+	$: {
+		if(typeof $searchedIndexes[0] === 'number') {
+
+			let paginatedIndexes = $searchedIndexes.slice(
+				paginationSettings.page * paginationSettings.limit,
+				paginationSettings.page * paginationSettings.limit + paginationSettings.limit
+			);
+		console.log("paginatedIndexes", paginatedIndexes, $searchedIndexes)
+				sourceData = getAirportInfoByIndex(data.airports, paginatedIndexes);
+			paginatedSource = sourceData;
+			updateTable(); 
+		}
+		else sourceData = [];
+	}
+
+
+	let paginationSettings = {
+	page: 0,
+	limit: 5,
+	size: $searchedIndexes.length,
+	amounts: [5],
+} satisfies PaginationSettings;
+
+	function updateTable() {
+	  tableSimple.head = ['Name', 'Id', 'Type', 'Iso_country', 'Iso_region', 'Longitude', 'Latitude'];
+	  tableSimple.body = tableMapperValues(paginatedSource, ['name', 'ident', 'type', 'iso_country', 'iso_region', 'longitude_deg', 'latitude_deg']);
+	  tableSimple.meta = tableMapperValues(paginatedSource, ['name', 'ident', 'type', 'iso_country', 'iso_region', 'longitude_deg', 'latitude_deg']);
+	  tableSimple.foot = ['Total', '', `<code class="code">${paginatedSource.length}</code>`];
+	  paginationSettings.size = $searchedIndexes.length;
+	}
+
   </script>
   
-  <main>
+<span>
+
 	<Table interactive={true} source={tableSimple} />
-  </main>
+	<Paginator
+	showFirstLastButtons="{true}"
+	bind:settings={paginationSettings}
+/>
+</span>
+
   

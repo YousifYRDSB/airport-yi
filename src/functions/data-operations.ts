@@ -17,7 +17,7 @@ export function getAirportInfoByIndex(data: AirportData, index: number[]): any {
             return null;
         }
 
-        results = [...results, {
+        results[i] = {
             continent: data.continent[index[i]],
             ident: data.ident[index[i]],
             iso_country: data.iso_country[index[i]],
@@ -27,7 +27,21 @@ export function getAirportInfoByIndex(data: AirportData, index: number[]): any {
             name: data.name[index[i]],
             type: data.type[index[i]]
             
-        }]
+        }
+    }
+    console.log(results)
+    return results;
+}
+
+export function getCoordinatesByIndex(data: AirportData, index: number[]): any {
+    let results: any[] = [];
+    for (let i = 0; i < index.length; i++) {
+        if (index[i] < 0 || index[i] >= data.name.length) {
+            console.error("Invalid index provided.");
+            return null;
+        }
+
+        results[i] = [data.longitude_deg[index[i]], data.latitude_deg[index[i]]]
     }
     console.log(results)
     return results;

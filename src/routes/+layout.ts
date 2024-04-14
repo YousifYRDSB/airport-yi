@@ -2,7 +2,7 @@
 export const ssr = false;
 
 import { loadJSON } from '../functions/DO_NOT_TOUCH';
-import { mergeSort } from '../functions/sort-search';
+import { mergeSort, categorySort } from '../functions/sort-search';
 
 interface AirportData {
         continent: string[];
@@ -18,13 +18,28 @@ interface AirportData {
 /** @type {import('./$types').LayoutServerLoad} */
 export async function load() {
         const data = await loadJSON("DO_NOT_TOUCH/data.json")
+        console.log(data)
+        
         let startTime = performance.now();
         const sortedNames = mergeSort(data.name)
         let endTime = performance.now();
-        console.log(`Operation took ${endTime - startTime} milliseconds`);
-        console.log(sortedNames)
+        let nameSortElapsed = endTime - startTime;
+        
+        startTime = performance.now();
+        const sortedTypes = categorySort(data.type)
+        endTime = performance.now();
+        let typeSortElapsed = endTime - startTime;
+
+        startTime = performance.now();
+        const sortedCountries = categorySort(data.iso_country)
+        endTime = performance.now();
+        let countrySortElapsed = endTime - startTime;
+        console.log(sortedCountries)
         return {
                 airports: data as AirportData,
-                sortedNames: sortedNames
+                sortedNames: sortedNames,
+                sortedTypes: sortedTypes,
+                sortedCountries: sortedCountries,
+                performance: [["mergeSort(name)", "categorySort(type)", "categorySort(country)"], [nameSortElapsed, typeSortElapsed, countrySortElapsed]]
         };
 }

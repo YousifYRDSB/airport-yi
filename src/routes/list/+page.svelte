@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Table from '../../components/table.svelte';
+    import {Table} from '../../components/table.svelte';
 	import {orderAirports} from "../../functions/sort-search"; 
 </script>
 

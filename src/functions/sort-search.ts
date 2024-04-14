@@ -16,45 +16,6 @@ function arrayPush<T>(arg: T, arr: T[]): T[] {
 
 
 
-// function merge<T>(left: T[], right: T[], arr: T[]): any {
-//   let i: number = 0;
-//   let j: number = 0;
-
-//   while (i < left.length && j < right.length) { 
-    
-//     if (left[i] < right[j]) {
-//       arr[i + j] = left[i]; 
-//       i++;
-//     } else {
-//       arr[i + j] = right[j]; 
-//       j++;
-//     }
-//   }
-
-//   return [...sliceArray(arr, 0, i + j), ...sliceArray(left, i), ...sliceArray(right, j)]; 
-// }
-  
-//   export function mergeSort<T>(arr: T[]): T[] {
-//     //Base case
-//     if (arr.length <= 1) {
-//       return arr;
-//     }
-  
-//     //Divide!
-//     const MID: number = Math.floor(arr.length / 2); 
-//     let left: T[] = sliceArray(arr, 0, MID); 
-//     let right: T[] = sliceArray(arr, MID); 
-  
-    
-//     left = mergeSort(left);
-//     right = mergeSort(right);
-  
-    
-//     return merge(left, right, arr);
-//   }
-
-
-
 export function mergeSort<T>(arr: T[]): number[] {
   // Initialize indices array
   const indices: number[] = new Array(arr.length);
@@ -132,20 +93,23 @@ export function targetMatch<T>(target: any, arr:any[]): T[]{
   return fullArray; 
 }
 
-export function search<T>(arr: T[], target:any, data:any): T|null{
-  const LENGTH = arr.length; 
+export function search<T>(target:any, data:any, arr: T[]): T|null{
+  const LENGTH = data.length; 
   let left =0; 
   let right = LENGTH -1; 
 
   while(left <= right){
     const MID = Math.floor((left + right)/2);
+    let index: any = 0;
+    if(arr) index = arr[MID];
+    else index = MID;
     // console.log('mid', data[MID])
-    if(data[arr[MID]] < target){
+    if(data[index] < target){
       left = MID + 1; 
-    }else if (data[arr[MID]] > target){
+    }else if (data[index] > target){
       right = MID  -1 ;
     }else{
-      return arr[MID]; 
+      return index; 
     }
   }
   return null; 
@@ -164,6 +128,24 @@ export function catergorize<T>(arr: T[], main: T[], start: number, end:number):T
 
     return category; 
 }
+
+// generated from GPT-4
+// function that takes an array of strings and returns an object where the keys are the unique strings and the values are arrays of all occurrences of the string
+// O(n)
+export function categorySort(strings: string[]): string[] {
+  const buckets: any = {};
+
+  for (let i = 0; i < strings.length; i++) {
+      const str = strings[i];
+      if (!buckets[str]) {
+          buckets[str] = [];
+      }
+      buckets[str].push(i);
+  }
+
+  return buckets;
+}
+ 
 
 // bonus 1 
 function comapre(airOne: string, airTwo:string): number | undefined{
