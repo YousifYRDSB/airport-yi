@@ -1,7 +1,7 @@
 <script lang='ts'>
 	import {RadioGroup, RadioItem} from '@skeletonlabs/skeleton';
 	import {mergeSort, search} from "../functions/mergesort"
-export let data;
+export let data: any;
 let searchInput: string = ''
 let nameIndex: number = -1;
 let value: number = 0;
