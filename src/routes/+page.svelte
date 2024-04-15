@@ -32,7 +32,7 @@ console.log('test')
 	<div class="flex items-start">
 	<div class="space-y-10 text-center flex flex-col items-center">
 		<h2 class="h2">Airport Lookup</h2>
-		<SearchInput data={data} performanceData={performanceData} {searchedIndexes}/> 
+		<SearchInput data={data} performanceData={performanceData} {searchedIndexes} {selectedAirport}/> 
 		<div class="flex">
 			<WorldRoute data={data} routes={undefined} {searchedIndexes} {selectedAirport}/>
 			<Table data={data} searchedIndexes={$searchedIndexes} {selectedAirport}/>

@@ -6,7 +6,7 @@
 	export let data: any;
 	export let searchedIndexes: Writable<number[]>;
 	export let performanceData: Writable<any>;
-		export let selectedAirport: Writable<number>;
+	export let selectedAirport: Writable<number>;
 
 			selectedAirport.subscribe((value: number) => {
 				console.log("VALUE", value)
@@ -54,8 +54,8 @@
 				let air1 = airportInfo[i]; 
 				let air2 = airportInfo[i+1]; 
 				if(air1[typeIndex] === air2[typeIndex]){
-					distance += distances(air1[latIndex],air2[latIndex], air1[lonIndex], air2[lonIndex])?; 
-					displacement += displacements(air1[latIndex],air2[latIndex], air1[lonIndex], air2[lonIndex])?; 
+					distance += distances(air1[latIndex],air2[latIndex], air1[lonIndex], air2[lonIndex])
+					displacement += displacements(air1[latIndex],air2[latIndex], air1[lonIndex], air2[lonIndex])
 				}else{
 					console.log('Invalid input.'); 
 				}
