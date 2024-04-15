@@ -10,7 +10,7 @@ let searchInput: string = ''
 let searchType: string = "id";
 
 async function searchAirport(query: string, searchType: string) {
-	let searchedIndex: number[] = [];
+	let searchedIndex: (number | null)[] = [];
 
 	const startTime = performance.now();
 	if(searchType === "name")
@@ -23,12 +23,7 @@ async function searchAirport(query: string, searchType: string) {
 	searchedIndex = data.sortedCountries[query];
 const endTime = performance.now();
 
-
-	console.log("found", searchedIndex)
-
-
     const elapsedTime = (endTime - startTime);
-    console.log(`The search function took ${elapsedTime} milliseconds.`);
 	let performanceTemp = [...$performanceData]
 	console.log(performanceTemp)
 	performanceTemp[1] = [...performanceTemp[1], elapsedTime]

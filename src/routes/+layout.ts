@@ -24,7 +24,7 @@ export async function load() {
         const sortedNames = mergeSort(data.name)
         let endTime = performance.now();
         let nameSortElapsed = endTime - startTime;
-        console.log(sortedNames)
+        // console.log(sortedNames)
         
         startTime = performance.now();
         const sortedTypes = categorySort(data.type)
@@ -43,3 +43,4 @@ export async function load() {
                 performance: [["mergeSort(name)", "categorySort(type)", "categorySort(country)"], [nameSortElapsed, typeSortElapsed, countrySortElapsed]]
         };
 }
+

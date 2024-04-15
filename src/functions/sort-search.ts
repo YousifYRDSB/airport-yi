@@ -75,20 +75,16 @@ function merge<T>(arr: T[], read: number[], write: number[], start: number, mid:
   let j = mid + 1;
   let k = start;
 
-  while (i <= mid && j <= end) {
-    if (arr[read[i]] <= arr[read[j]]) {
-      write[k++] = read[i++];
-    } else {
-      write[k++] = read[j++];
-    }
+  for (; i <= mid && j <= end; k++) {
+      if (arr[read[i]] <= arr[read[j]]) {
+          write[k] = read[i++];
+      } else {
+          write[k] = read[j++];
+      }
   }
 
-  while (i <= mid) {
-    write[k++] = read[i++];
-  }
-
-  while (j <= end) {
-    write[k++] = read[j++];
+  for (let m = i <= mid ? i : j; k <= end; k++, m++) {
+      write[k] = read[m];
   }
 }
 
@@ -113,7 +109,7 @@ export function targetMatch<T>(target: any, arr:any[]): T[]{
   return fullArray; 
 }
 
-export function search<T>(target:any, data:any, arr: T[]): T|null{
+export function search<T>(target:any, data:any, arr?: T[]): number|null{
   const LENGTH = data.length; 
   let left =0; 
   let right = LENGTH -1; 
@@ -160,7 +156,7 @@ export function categorySort(strings: string[]): string[] {
       if (!buckets[str]) {
           buckets[str] = [];
       }
-      buckets[str].push(i);
+      buckets[str][ buckets[str].length] = i
   }
 
   return buckets;
