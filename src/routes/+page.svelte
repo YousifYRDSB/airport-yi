@@ -35,7 +35,7 @@ console.log('test')
 		<SearchInput data={data} performanceData={performanceData} {searchedIndexes}/> 
 		<div class="flex">
 			<WorldRoute data={data} routes={undefined} {searchedIndexes} {selectedAirport}/>
-			<Table data={data} {searchedIndexes} {selectedAirport}/>
+			<Table data={data} {searchedIndexes} {selectedAirport} {selectedAirport}/>
 		</div>
 			
 
