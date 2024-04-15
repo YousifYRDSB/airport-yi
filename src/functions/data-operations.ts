@@ -68,6 +68,8 @@ export function reverseArray<T>(arr: T[]): T[] {
     let start = 0;
     let end = arr.length - 1;
 
+    arr = [...arr]
+
     while (start < end) {
         // Swap elements using a temporary variable
         let temp = arr[start];

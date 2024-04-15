@@ -26,13 +26,8 @@
                 sortedIndexes =  isAscending ? combineAllValues(data[category]) : reverseArray(combineAllValues(data[category]))
             }
             else {
-                if(!isAscending){
-                sortedIndexes = data[category]
-                }
-                if(isAscending){ 
-                    sortedIndexes = reverseArray(data[category])
+                    sortedIndexes = isAscending ? data[category] : reverseArray(data[category])
 
-                }
             }
         }
         
