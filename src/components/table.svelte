@@ -1,42 +1,76 @@
-
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-
-
 <script lang="ts">
-	import '../app.postcss';
 	import { Table } from '@skeletonlabs/skeleton';
-import type { TableSource } from '@skeletonlabs/skeleton';
-import { tableMapperValues } from '@skeletonlabs/skeleton';
+	import type { TableSource, PaginationSettings } from '@skeletonlabs/skeleton';
+	import { tableMapperValues } from '@skeletonlabs/skeleton';
+	import { Paginator } from '@skeletonlabs/skeleton';
+	import { getAirportInfoByIndex, containsNumber } from '../functions/data-operations';
+	import {writable, type Writable } from 'svelte/store';
 
+	export let data: any;
+	export let searchedIndexes: number[] = [];
+		export let selectedAirport: Writable<number> = writable<number>(-1);
 
+	let sourceData: any = []; // Initialize sourceData as an empty array
+	let paginatedSource: any = []; // Initialize paginatedSource as an empty array
+	let tableSimple: TableSource = {
+		head: [],
+		body: [],
+		meta: [],
+		foot: []
+	};
 
-const sourceData = [
-	{ position: 1, name: 'London', type: '1.0079', country: 'H', longitude:'4', value: 2.1, symbol: 'H' },
-    { position: 2, name: 'Toronto', type: '4.0026', country: 'He', longitude:'4', value: 3.9, symbol: 'He' },
-    { position: 3, name: 'Vancouver', type: '6.941', country: 'Li', longitude:'4', value: 4.2, symbol: 'Li' },
-    { position: 4, name: 'Beryllium', type: '9.012', country: 'Be', longitude:'4', value: 5.7, symbol: 'Be' },
-    { position: 5, name: 'Boron', type: '10.81', country: 'B', longitude:'4', value: 6.9, symbol: 'B' },
-    { position: '', name: '', type: '', country: '', longitude:'', value: '', symbol: '' }
+	// Reactive statement to update sourceData whenever searchedIndexes changes
+	$: {
+		if (containsNumber(searchedIndexes)) {
+			let paginatedIndexes = searchedIndexes.slice(
+				paginationSettings.page * paginationSettings.limit,
+				paginationSettings.page * paginationSettings.limit + paginationSettings.limit
+			);
+			sourceData = getAirportInfoByIndex(data.airports, paginatedIndexes);
+			paginatedSource = sourceData;
+			updateTable();
+		} else sourceData = [];
+	}
 
-];			
-const tableSimple: TableSource = {
-	// A list of heading labels.
-	head: ['Name', 'Id', 'Type', 'Iso_country', 'Iso_region', 'Longitude', 'Latitude'],
-	// The data visibly shown in your table body UI.
-	body: tableMapperValues(sourceData, ['name', 'symbol', 'type', 'value', 'region', 'longitude', 'latitude']),
-	// Optional: The data returned when interactive is enabled and a row is clicked.
-	meta: tableMapperValues(sourceData, ['position', 'type', 'name', 'symbol', 'weight']),
-	// Optional: A list of footer labels.
-	foot: ['Total', '', `<code class="code">${sourceData.length}</code>`]
-};
-				
+	let paginationSettings = {
+		page: 0,
+		limit: 5,
+		size: searchedIndexes.length,
+		amounts: [5]
+	} satisfies PaginationSettings;
+
+	function updateTable() {
+		tableSimple.head = ['Name', 'Id', 'Type', 'Iso_country', 'Iso_region', 'Longitude', 'Latitude'];
+		tableSimple.body = tableMapperValues(paginatedSource, [
+			'name',
+			'ident',
+			'type',
+			'iso_country',
+			'iso_region',
+			'longitude_deg',
+			'latitude_deg'
+		]);
+		tableSimple.meta = tableMapperValues(paginatedSource, [
+			'name',
+			'ident',
+			'type',
+			'iso_country',
+			'iso_region',
+			'longitude_deg',
+			'latitude_deg',
+			'index'
+		]);
+		tableSimple.foot = ['Total', '', `<code class="code">${paginatedSource.length}</code>`];
+		paginationSettings.size = searchedIndexes.length;
+	}
+
+	function tableSelectionHandler(event: CustomEvent) {
+		 selectedAirport.set(event.detail[7])
+	}
+
 </script>
 
-<main>
-	
-
-		<Table interactive={true} source={tableSimple} />
-        
-		
-
-</main>
+<span>
+	<Table interactive={true} source={tableSimple} on:selected={tableSelectionHandler} />
+	<Paginator showFirstLastButtons={true} bind:settings={paginationSettings} />
+</span>
