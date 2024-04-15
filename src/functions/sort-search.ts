@@ -164,25 +164,31 @@ export function categorySort(strings: string[]): string[] {
  
 
 // bonus 1 
-function comapre(airOne: string, airTwo:string): number | undefined{
-    let indexOne = search(data.sortedID, airOne, data.airports.ID);
-    let indexTwo = search(data.sortedID, airTwo, data.airports.ID);
+export function distances(lat1:number, lat2:number, lon1:number,lon2:number): number | undefined{
+    
+  const dlon = lon2 - lon1;
+  const dlat = lat2 - lat1; 
+  const R = 6371; 
 
-    if(data.airports.type[indexOne] === data.airports.type[indexTwo]){
-      const lon1 = data.airports.longitude[indexOne];
-      const lon2 = data.airports.longitude[indexTwo];
-      const lat1 = data.airports.longitude[indexOne];
-      const lat2 = data.airports.longitude[indexTwo];
-      const dlon = lon2 - lon1;
-      const dlat = lat2 - lat1; 
-      const R = 6371; 
+  const d = 2*R*Math.asin(Math.sqrt((1-Math.cos(dlat)+ Math.cos(lat1)*Math.cos(lat2)*(1-Math.cos(dlon)))/2)); 
 
-      let d = 2*R*Math.asin(Math.sqrt((1-Math.cos(dlat)+ Math.cos(lat1)*Math.cos(lat2)*(1-Math.cos(dlon)))/2)); 
+  return d; 
+}
 
-      return d; 
-    }else{
-      return undefined; 
-    }
+
+
+export function displacements(lat1:number, lat2:number, lon1:number,lon2:number): number | undefined{
+    
+  const dlon = lon2 - lon1;
+  const dlat = lat2 - lat1; 
+  const R = 6371; 
+
+  const dx = (dlon)*R*Math.cos(dlat/2)
+  const dy = dlat*R 
+  const d = Math.sqrt(Math.sqrt(dx) + Math.sqrt(dy)); 
+
+
+  return d; 
 }
 
 
