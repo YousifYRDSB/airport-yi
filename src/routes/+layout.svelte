@@ -11,32 +11,22 @@
 			<svelte:fragment slot="lead">
 				<strong class="text-xl uppercase">Airport Search</strong>
 			</svelte:fragment>
-			<!-- <svelte:fragment slot="trail">
+			<svelte:fragment >
 				<a
 					class="btn btn-sm variant-ghost-surface"
-					href="https://discord.gg/EXqV7W8MtY"
-					target="_blank"
+					href="/"
 					rel="noreferrer"
 				>
-					Discord
+					Home
 				</a>
 				<a
 					class="btn btn-sm variant-ghost-surface"
-					href="https://twitter.com/SkeletonUI"
-					target="_blank"
+					href="/list"
 					rel="noreferrer"
 				>
-					Twitter
+					Full List
 				</a>
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://github.com/skeletonlabs/skeleton"
-					target="_blank"
-					rel="noreferrer"
-				>
-					GitHub
-				</a>
-			</svelte:fragment> -->
+			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
 	<!-- Page Route Content -->

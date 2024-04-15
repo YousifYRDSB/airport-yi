@@ -3,14 +3,13 @@
 	//import {orderAirports} from "../../functions/sort-search"; 
     import { reverseArray, combineAllValues } from '../../functions/data-operations';
     export let data:any;
-    let sortedIndexes: number[] = []
+    let sortedIndexes: number[] = data.sortedNames
     let selectedCategory: string = '';
     let isAscending: boolean = true;
 
     function handleSort(category: string){
         if(category == selectedCategory)
             isAscending = !isAscending
-
 
         if(category == "ident"){
             let identIndexes = [];
@@ -53,11 +52,16 @@
     </div>
    
 
-<div>
+<div class="tableContainer">
     <Table data={data} searchedIndexes={sortedIndexes} />
 </div>
 
 <style>
+
+    .tableContainer{
+        margin: 50px 10%;
+    }
+
     .title{
         font-size: 40px;
         font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -65,15 +69,9 @@
         margin: 50px;
     }
 
-    .button{
-        width: 60px; 
-        height: 60px; 
-         
-    }
-
     .buttons{
         display: flex;
     justify-content: flex-end;
-    margin: 20px;
+    margin: 0 10%;
     }
 </style>
