@@ -43,12 +43,12 @@
     const lonIndex: number = 1;
     const typeIndex: number = 2;
     let totalDistance: number = 0;
-    let totalDisplacement: number = 0;
+    let displacement: number = 0;
 
     // Array to hold the detailed info for each selected airport
     let airportInfo = indices.map(index => [
-        data.airports.latitude[index],
-        data.airports.longitude[index],
+        data.airports.latitude_deg[index],
+        data.airports.longitude_deg[index],
         data.airports.type[index]
     ]);
 
@@ -58,22 +58,23 @@
         return [];
     }
 
-    // Iterate over the airportInfo array to calculate distances and displacements
+    // Iterate over the airportInfo array to calculate total distance
     for (let i = 0; i < airportInfo.length - 1; i++) {
         let air1 = airportInfo[i];
         let air2 = airportInfo[i + 1];
 
-        // Ensure both airports are of the same type before calculating
-        if (air1[typeIndex] === air2[typeIndex]) {
             totalDistance += distances(air1[latIndex], air2[latIndex], air1[lonIndex], air2[lonIndex]);
-            totalDisplacement += displacements(air1[latIndex], air2[latIndex], air1[lonIndex], air2[lonIndex]);
-        } else {
-            console.log('Invalid input: Airports must be of the same type to calculate distance and displacement.');
-        }
+        
     }
 
+    // Calculate displacement only between the first and last airports
+    let firstAirport = airportInfo[0];
+    let lastAirport = airportInfo[airportInfo.length - 1];
+        displacement = distances(firstAirport[latIndex], lastAirport[latIndex], firstAirport[lonIndex], lastAirport[lonIndex]);
+
+
     // Return an array with the total distance and displacement
-    return [totalDistance, totalDisplacement];
+    return [totalDistance, displacement];
 }
 
 
