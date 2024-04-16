@@ -41,7 +41,6 @@
 	function calculateDistance(indices: number[]): number[] {
     const latIndex: number = 0;
     const lonIndex: number = 1;
-    const typeIndex: number = 2;
     let totalDistance: number = 0;
     let displacement: number = 0;
 
@@ -89,26 +88,43 @@
 	}
 </script>
 
-<div>
-    <div class="relative flex items-center w-[50vw]">
-			<input bind:value={searchInput} class="input p-[15px] pl-[15px] pr-[100px] w-full focus:outline-none" type="search" name="demo" placeholder="Search..." />
-			<button on:click={() => searchAirport(searchInput, searchType)} class="absolute right-0 top-0 h-full px-4 text-white bg-[#d4163c] hover:bg-red-700 rounded-r-[24px] min-w-[10%]">
-			  Search
-			</button>
-		  </div>
-		  <p style="margin-top: 22px;">filter by:</p>
-		  <RadioGroup>
-			  <RadioItem bind:group={searchType} name="justify" value={"id"}>id</RadioItem>
-			  <RadioItem bind:group={searchType} name="justify" value={"name"}>name</RadioItem>
-			  <RadioItem bind:group={searchType} name="justify" value={"type"}>type</RadioItem>
-			  <RadioItem bind:group={searchType} name="justify" value={"country"}>country</RadioItem>
-			  </RadioGroup>
-			  <div class="w-[50vw]">
+<div class="flex flex-col w-[50vw]">
+    <!-- Search bar and filter side by side -->
+    <div class="flex items-center justify-between relative">
+        <!-- Search input and button -->
+        <div class="relative flex-grow">
+            <input bind:value={searchInput} class="input p-[15px] pl-[15px] pr-[100px] w-full focus:outline-none" type="search" name="demo" placeholder="Search..." />
+            <button on:click={() => searchAirport(searchInput, searchType)} class="absolute right-0 top-0 h-full px-4 text-white bg-[#d4163c] hover:bg-red-700 rounded-r-[24px] min-w-[10%]">
+                Search
+            </button>
+        </div>
 
-				  <p style="margin-top: 22px;">Selected: </p>
-				  {#each $selectedAirport as airport}
-				<button on:click={() => deleteSelection(airport)} class="chip variant-filled m-1">{data.airports.name[airport]}  &nbsp; X</button>
-				{/each}
-				<button on:click={getDistanceHandler}>GET DISTANCE</button>
-			  </div>
+        <!-- Filter by options -->
+        <div class="ml-4 relative">
+            <p class="absolute top-[-14px] left-0 text-gray-500">filter search by:</p>
+            <RadioGroup>
+                <RadioItem bind:group={searchType} name="justify" value={"id"}>id</RadioItem>
+                <RadioItem bind:group={searchType} name="justify" value={"name"}>name</RadioItem>
+                <RadioItem bind:group={searchType} name="justify" value={"type"}>type</RadioItem>
+                <RadioItem bind:group={searchType} name="justify" value={"country"}>country</RadioItem>
+            </RadioGroup>
+        </div>
+    </div>
+
+    <!-- Buttons for selected airports and action -->
+    <div class="flex items-center mt-4">
+        <button on:click={getDistanceHandler} class="ml-4 variant-filled p-2 rounded-md border border-gray-600">GET DATA</button>
+		<select class="ml-4 bg-gray-800 text-white border border-gray-600 rounded-md shadow focus:ring-blue-500 focus:border-blue-500 p-2">
+			<option value="fastest">Great Circle Distance</option>
+			<option value="shortest">Transfer</option>
+			<option value="economical">Fly Frugal</option>
+			<option value="economical">Flight Simulator</option>
+		</select>		
+        <div class="flex flex-wrap">
+            {#each $selectedAirport as airport}
+                <button on:click={() => deleteSelection(airport)} class="chip variant-filled m-1">{data.airports.name[airport]} &nbsp; X</button>
+            {/each}
+        </div>
+    </div>
+	
 </div>

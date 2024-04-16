@@ -3,6 +3,7 @@ export const ssr = false;
 
 import { loadJSON } from '../functions/DO_NOT_TOUCH';
 import { mergeSort, categorySort } from '../functions/sort-search';
+import { writable } from 'svelte/store';
 
 interface AirportData {
         continent: string[];
@@ -55,6 +56,7 @@ export async function load() {
         const sortedCountries = categorySort(data.iso_country)
         endTime = performance.now();
         let countrySortElapsed = endTime - startTime;
+
         return {
                 airports: data as AirportData,
                 sortedNames: sortedNames,
@@ -64,7 +66,8 @@ export async function load() {
                 sortedContinents: sortedContinents,
                 sortedLatitudes: sortedLatitudes,
                 sortedLongitudes: sortedLongitudes,
-                performance: [["mergeSort(name)", "mergeSort(latitude)", "margeSort(longitude)", "categorySort(type)", "categorySort(country)", "mergeSort(region)", "categorySort(continent)"], [nameSortElapsed, latitudeSortElapsed, longitudeSortElapsed, typeSortElapsed, countrySortElapsed, regionSortElapsed, continentSortElapsed]]
+                performance: [["mergeSort(name)", "mergeSort(latitude)", "margeSort(longitude)", "categorySort(type)", "categorySort(country)", "mergeSort(region)", "categorySort(continent)"], [nameSortElapsed, latitudeSortElapsed, longitudeSortElapsed, typeSortElapsed, countrySortElapsed, regionSortElapsed, continentSortElapsed]],
+                performanceData: writable(["mergeSort(name)", "mergeSort(latitude)", "margeSort(longitude)", "categorySort(type)", "categorySort(country)", "mergeSort(region)", "categorySort(continent)"]),
         };
 }
 

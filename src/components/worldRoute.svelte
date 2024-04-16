@@ -6,6 +6,7 @@
 
 	let canvas: HTMLCanvasElement;
 	let context: CanvasRenderingContext2D;
+	let foregroundContext: CanvasRenderingContext2D;
 	let geojson = {};
 	let projection: d3.GeoProjection;
 
@@ -16,12 +17,14 @@
 
 	let locations: number[][] = [];
   let selectedLocations: number[] = [];
-  selectedAirport.subscribe((value) => {
+  $: {
   if(containsNumber($selectedAirport))
   selectedLocations = getCoordinatesByIndex(data.airports, $selectedAirport);
+  else selectedLocations = [];
+
   resize();
   
-});
+}
 
 	$: {
 		if (containsNumber($searchedIndexes))
@@ -44,7 +47,7 @@
 		if (context) {
 			const buffer = 50;
 
-      
+
 			let extent;
 			if (locations.length === 1) {
         console.log("LEGNTH IS ONE", locations);
@@ -70,20 +73,20 @@
 			drawMap(geoGenerator);
 
       if(selectedLocations) {
-        console.log("SELECTED LOCATION", selectedLocations);
         context.beginPath();
-		context.fillStyle = '#ffffff'; // Change color as needed
+		context.fillStyle = '#3ae0cd'; // Change color as needed
 		selectedLocations.forEach((point) => {
 			const circleGenerator = d3
 				.geoCircle()
 				.center([point[0], point[1]]) // Set the center of the circle to the lon/lat coordinates of the point
-				.radius(0.5); // Set the radius of the circle
+				.radius(0.4); // Set the radius of the circle
 
 			const circle = circleGenerator();
 			geoGenerator(circle);
 		});
 		context.fill();
       }
+	
 		}
 	}
 
@@ -173,7 +176,7 @@
 		context.stroke();
 
 		context.beginPath();
-		context.fillStyle = '#3ae0cd'; // Change color as needed
+		context.fillStyle = '#444'; // Change color as needed
 		locations.forEach((point) => {
 			const circleGenerator = d3
 				.geoCircle()

@@ -1,6 +1,11 @@
 <script lang="ts">
 	import '../app.postcss';
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+	import {writable} from 'svelte/store';
+
+	export let data: any;
+	let myStore = data.performanceData
+	console.log("PERFORAMCNEDATA", ($myStore))
 </script>
 
 <!-- App Shell -->

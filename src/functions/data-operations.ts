@@ -34,7 +34,7 @@ export function getAirportInfoByIndex(data: AirportData, index: number[]): any {
 }
 
 export function getCoordinatesByIndex(data: AirportData, index: number[]): any {
-    const maxElements = 1000;
+    const maxElements = 500;
     let results: any[] = [];
 
     // Calculate skip interval to evenly distribute 1000 indices across the array length
