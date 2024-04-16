@@ -11,15 +11,14 @@
 
 	export let data: any;
 	export let searchedIndexes: Writable<number[]>;
-  export let selectedAirport: Writable<number>;
+  export let selectedAirport: Writable<number[]>;
 	export let routes: any;
 
 	let locations: number[][] = [];
-  let selectedLocation: number[][] = [];
+  let selectedLocations: number[] = [];
   selectedAirport.subscribe((value) => {
-	console.log(value);
-  if(containsNumber([$selectedAirport]))
-  selectedLocation = getCoordinatesByIndex(data.airports, [$selectedAirport]);
+  if(containsNumber($selectedAirport))
+  selectedLocations = getCoordinatesByIndex(data.airports, $selectedAirport);
   resize();
   
 });
@@ -70,15 +69,15 @@
       context.clearRect(0, 0, 800, 600);
 			drawMap(geoGenerator);
 
-      if(selectedLocation) {
-        console.log("SELECTED LOCATION", selectedLocation);
+      if(selectedLocations) {
+        console.log("SELECTED LOCATION", selectedLocations);
         context.beginPath();
 		context.fillStyle = '#ffffff'; // Change color as needed
-		selectedLocation.forEach((point) => {
+		selectedLocations.forEach((point) => {
 			const circleGenerator = d3
 				.geoCircle()
 				.center([point[0], point[1]]) // Set the center of the circle to the lon/lat coordinates of the point
-				.radius(2); // Set the radius of the circle
+				.radius(0.5); // Set the radius of the circle
 
 			const circle = circleGenerator();
 			geoGenerator(circle);

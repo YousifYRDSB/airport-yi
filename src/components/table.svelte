@@ -3,12 +3,12 @@
 	import type { TableSource, PaginationSettings } from '@skeletonlabs/skeleton';
 	import { tableMapperValues } from '@skeletonlabs/skeleton';
 	import { Paginator } from '@skeletonlabs/skeleton';
-	import { getAirportInfoByIndex, containsNumber } from '../functions/data-operations';
+	import { getAirportInfoByIndex, containsNumber, checkIfInArray } from '../functions/data-operations';
 	import {writable, type Writable } from 'svelte/store';
 
 	export let data: any;
 	export let searchedIndexes: number[] = [];
-		export let selectedAirport: Writable<number> = writable<number>(-1);
+		export let selectedAirport: Writable<number[]> = writable<number[]>([]);
 
 	let sourceData: any = []; // Initialize sourceData as an empty array
 	let paginatedSource: any = []; // Initialize paginatedSource as an empty array
@@ -65,7 +65,8 @@
 	}
 
 	function tableSelectionHandler(event: CustomEvent) {
-		 selectedAirport.set(event.detail[7])
+		if(!checkIfInArray(event.detail[7], $selectedAirport))
+		 selectedAirport.set([...$selectedAirport, event.detail[7]])
 	}
 
 </script>

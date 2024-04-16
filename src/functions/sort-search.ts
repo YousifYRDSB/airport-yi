@@ -164,7 +164,7 @@ export function categorySort(strings: string[]): string[] {
  
 
 // bonus 1 
-export function distances(lat1:number, lat2:number, lon1:number,lon2:number): number | undefined{
+export function distances(lat1:number, lat2:number, lon1:number,lon2:number): number{
     
   const dlon = lon2 - lon1;
   const dlat = lat2 - lat1; 
@@ -177,7 +177,7 @@ export function distances(lat1:number, lat2:number, lon1:number,lon2:number): nu
 
 
 
-export function displacements(lat1:number, lat2:number, lon1:number,lon2:number): number | undefined{
+export function displacements(lat1:number, lat2:number, lon1:number,lon2:number): number{
     
   const dlon = lon2 - lon1;
   const dlat = lat2 - lat1; 

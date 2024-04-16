@@ -18,7 +18,7 @@ console.log('test')
 	// console.log(data.airports)
 	let searchedIndexes = writable([]);
 	let performanceData = writable(data.performance);
-	let selectedAirport = writable(-1)
+	let selectedAirport = writable([])
 
 	$: console.log('Data updated', data);
 

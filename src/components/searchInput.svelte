@@ -1,16 +1,14 @@
 <script lang='ts'>
 	import {RadioGroup, RadioItem} from '@skeletonlabs/skeleton';
-	import {mergeSort, search, distances, displacements} from "../functions/sort-search"
+	import {search, distances, displacements} from "../functions/sort-search"
 	import type { Writable } from 'svelte/store';
+	import { removeNumberFromArray } from '../functions/data-operations';
 
 	export let data: any;
 	export let searchedIndexes: Writable<number[]>;
 	export let performanceData: Writable<any>;
-	export let selectedAirport: Writable<number>;
+	export let selectedAirport: Writable<number[]>;
 
-			selectedAirport.subscribe((value: number) => {
-				console.log("VALUE", value)
-			})
 	let airportInfo: any[] =  []; 
 	let searchInput: string = '' 
 	let searchType: string = "id";
@@ -40,47 +38,76 @@
 	}
 
 
-	function calculateDistance(searchedIndex: number): any{
-		const latIndex:number = 0; 
-		const lonIndex:number=1; 
-		const typeIndex:number=2;
-		let distance: number = 0; 
-		let displacement: number = 0; 
+	function calculateDistance(indices: number[]): number[] {
+    const latIndex: number = 0;
+    const lonIndex: number = 1;
+    const typeIndex: number = 2;
+    let totalDistance: number = 0;
+    let totalDisplacement: number = 0;
 
-		airportInfo = [...airportInfo, [data.airports.latitude[searchedIndex], data.airports.longitude[searchedIndex], data.airports.type[searchedIndex]]]; 
+    // Array to hold the detailed info for each selected airport
+    let airportInfo = indices.map(index => [
+        data.airports.latitude[index],
+        data.airports.longitude[index],
+        data.airports.type[index]
+    ]);
 
-		if(airportInfo.length>=2){
-			for(let i = 0; i<airportInfo.length; i++){
-				let air1 = airportInfo[i]; 
-				let air2 = airportInfo[i+1]; 
-				if(air1[typeIndex] === air2[typeIndex]){
-					distance += distances(air1[latIndex],air2[latIndex], air1[lonIndex], air2[lonIndex])
-					displacement += displacements(air1[latIndex],air2[latIndex], air1[lonIndex], air2[lonIndex])
-				}else{
-					console.log('Invalid input.'); 
-				}
-		
-			}
-		}else if(airportInfo.length>=10){
-			console.log('ERROR! Input has exceeded maximum amount.')
-		}else{
-			console.log('Please input more than one airport.')
-		}
-		
+    // Ensure there are at least two airports to compare
+    if (airportInfo.length < 2) {
+        console.log('Please input more than one airport.');
+        return [];
+    }
+
+    // Iterate over the airportInfo array to calculate distances and displacements
+    for (let i = 0; i < airportInfo.length - 1; i++) {
+        let air1 = airportInfo[i];
+        let air2 = airportInfo[i + 1];
+
+        // Ensure both airports are of the same type before calculating
+        if (air1[typeIndex] === air2[typeIndex]) {
+            totalDistance += distances(air1[latIndex], air2[latIndex], air1[lonIndex], air2[lonIndex]);
+            totalDisplacement += displacements(air1[latIndex], air2[latIndex], air1[lonIndex], air2[lonIndex]);
+        } else {
+            console.log('Invalid input: Airports must be of the same type to calculate distance and displacement.');
+        }
+    }
+
+    // Return an array with the total distance and displacement
+    return [totalDistance, totalDisplacement];
+}
+
+
+	function deleteSelection(index: number){
+		console.log(index)
+		const newArray = removeNumberFromArray(index, $selectedAirport)
+		selectedAirport.set(newArray)
+	}
+
+	function getDistanceHandler(){
+		console.log(calculateDistance($selectedAirport))
 	}
 </script>
 
 <div>
-    <div class="relative flex items-center w-full">
+    <div class="relative flex items-center w-[50vw]">
 			<input bind:value={searchInput} class="input p-[15px] pl-[15px] pr-[100px] w-full focus:outline-none" type="search" name="demo" placeholder="Search..." />
 			<button on:click={() => searchAirport(searchInput, searchType)} class="absolute right-0 top-0 h-full px-4 text-white bg-[#d4163c] hover:bg-red-700 rounded-r-[24px] min-w-[10%]">
 			  Search
 			</button>
 		  </div>
+		  <p style="margin-top: 22px;">filter by:</p>
 		  <RadioGroup>
 			  <RadioItem bind:group={searchType} name="justify" value={"id"}>id</RadioItem>
 			  <RadioItem bind:group={searchType} name="justify" value={"name"}>name</RadioItem>
 			  <RadioItem bind:group={searchType} name="justify" value={"type"}>type</RadioItem>
 			  <RadioItem bind:group={searchType} name="justify" value={"country"}>country</RadioItem>
 			  </RadioGroup>
+			  <div class="w-[50vw]">
+
+				  <p style="margin-top: 22px;">Selected: </p>
+				  {#each $selectedAirport as airport}
+				<button on:click={() => deleteSelection(airport)} class="chip variant-filled m-1">{data.airports.name[airport]}  &nbsp; X</button>
+				{/each}
+				<button on:click={getDistanceHandler}>GET DISTANCE</button>
+			  </div>
 </div>

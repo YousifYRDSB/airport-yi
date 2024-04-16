@@ -34,7 +34,7 @@ export function getAirportInfoByIndex(data: AirportData, index: number[]): any {
 }
 
 export function getCoordinatesByIndex(data: AirportData, index: number[]): any {
-    const maxElements = 800;
+    const maxElements = 1000;
     let results: any[] = [];
 
     // Calculate skip interval to evenly distribute 1000 indices across the array length
@@ -93,4 +93,33 @@ export function combineAllValues(obj: any) {
         }
     }
     return result;
+}
+
+export function checkIfInArray(value: number, array: number[]) {
+    // Loop through each element in the array
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] === value) {
+            return true;  // Return true if the value matches the current element
+        }
+    }
+    return false;  // Return false if no match is found after checking all elements
+}
+
+export function removeNumberFromArray(number, array) {
+    let indexToRemove = -1;
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] === number) {
+            indexToRemove = i;
+            break;
+        }
+    }
+
+    if (indexToRemove !== -1) {
+        for (let j = indexToRemove; j < array.length - 1; j++) {
+            array[j] = array[j + 1];
+        }
+        array.length--;  // Reduce the array size by one
+    }
+
+    return array;
 }
