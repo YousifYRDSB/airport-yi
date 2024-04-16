@@ -8,6 +8,7 @@
 	export let searchedIndexes: Writable<number[]>;
 	export let performanceData: Writable<any>;
 	export let selectedAirport: Writable<number[]>;
+	export let calculatedDistance: Writable<number[]>
 
 	let airportInfo: any[] =  []; 
 	let searchInput: string = '' 
@@ -61,8 +62,8 @@
     for (let i = 0; i < airportInfo.length - 1; i++) {
         let air1 = airportInfo[i];
         let air2 = airportInfo[i + 1];
-
-            totalDistance += distances(air1[latIndex], air2[latIndex], air1[lonIndex], air2[lonIndex]);
+        
+        totalDistance += distances(air1[latIndex], air2[latIndex], air1[lonIndex], air2[lonIndex]);
         
     }
 
@@ -84,7 +85,7 @@
 	}
 
 	function getDistanceHandler(){
-		console.log(calculateDistance($selectedAirport))
+		calculatedDistance.set(calculateDistance($selectedAirport))
 	}
 </script>
 

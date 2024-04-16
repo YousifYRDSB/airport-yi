@@ -9,6 +9,7 @@
 	let foregroundContext: CanvasRenderingContext2D;
 	let geojson = {};
 	let projection: d3.GeoProjection;
+	export let calculatedDistance: Writable<number[]>
 
 	export let data: any;
 	export let searchedIndexes: Writable<number[]>;
@@ -48,8 +49,8 @@
 			const buffer = 50;
 
 
-			let extent;
-			if (locations.length === 1) {
+			let extent: any = locations;
+			if (extent.length === 1) {
         console.log("LEGNTH IS ONE", locations);
 				extent = [
 					[locations[0][0] - 10, locations[0][1] - 10], // bottom-left corner of the rectangle
@@ -57,6 +58,9 @@
 				];
 				console.log('EXTENT', extent);
 			}
+			extent = [...extent, ...selectedLocations]
+			console.log(extent)
+			
 			projection = d3.geoMercator().fitExtent(
 				[
 					[buffer, buffer],
@@ -64,7 +68,7 @@
 				],
 				{
 					type: 'LineString',
-					coordinates: extent ? extent : locations
+					coordinates: extent
 				}
 			);
 
@@ -75,7 +79,7 @@
       if(selectedLocations) {
         context.beginPath();
 		context.fillStyle = '#3ae0cd'; // Change color as needed
-		selectedLocations.forEach((point) => {
+		selectedLocations.forEach((point: any) => {
 			const circleGenerator = d3
 				.geoCircle()
 				.center([point[0], point[1]]) // Set the center of the circle to the lon/lat coordinates of the point
@@ -216,7 +220,9 @@
 	}
 </script>
 <div class="relative">
-  <p class="absolute top-0 left-0 text-gray-800 m-2">(the earth is flat.)</p>
+	{#if $calculatedDistance.length}
+  <p class="absolute top-0 left-[250px] text-xl text-red-500 m-2">Distance is {$calculatedDistance[0].toFixed(0)}m, Displacement is {$calculatedDistance[1].toFixed(0)}m</p>
+	{/if}
   {#if locations.length == 0}
   <p class="absolute top-[45%] left-[10%] text-red-800 m-2">No airport selected! Select one to display it on the map</p>
 {/if}

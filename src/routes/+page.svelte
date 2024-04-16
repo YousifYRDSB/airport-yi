@@ -19,6 +19,7 @@ console.log('test')
 	let searchedIndexes = writable([]);
 	let performanceData = writable(data.performance);
 	let selectedAirport = writable([])
+	let calculatedDistance = writable([])
 
 	$: console.log('Data updated', data);
 
@@ -34,9 +35,9 @@ console.log('test')
 		<h2 class="h2">
 			<span class="bg-gradient-to-br from-red-700 to-red-500 bg-clip-text text-transparent box-decoration-clone">Airport Lookup and Routing</span>
 		</h2>
-		<SearchInput data={data} performanceData={performanceData} {searchedIndexes} {selectedAirport}/> 
+		<SearchInput data={data} performanceData={performanceData} {calculatedDistance} {searchedIndexes} {selectedAirport}/> 
 		<div class="flex">
-			<WorldRoute data={data} routes={undefined} {searchedIndexes} {selectedAirport}/>
+			<WorldRoute data={data} routes={undefined} {searchedIndexes} {calculatedDistance} {selectedAirport}/>
 			<Table data={data} searchedIndexes={$searchedIndexes} {selectedAirport}/>
 		</div>
 			

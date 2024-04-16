@@ -105,14 +105,17 @@ export function checkIfInArray(value: number, array: number[]) {
     return false;  // Return false if no match is found after checking all elements
 }
 
-export function removeNumberFromArray(number, array) {
+export function removeNumberFromArray(number: number, array: number[], numberIsIndex?: boolean) {
     let indexToRemove = -1;
+    if(!numberIsIndex){
     for (let i = 0; i < array.length; i++) {
         if (array[i] === number) {
             indexToRemove = i;
             break;
         }
     }
+}
+else indexToRemove = number;
 
     if (indexToRemove !== -1) {
         for (let j = indexToRemove; j < array.length - 1; j++) {

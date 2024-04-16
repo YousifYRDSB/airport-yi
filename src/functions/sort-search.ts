@@ -132,19 +132,6 @@ export function search<T>(target:any, data:any, arr?: T[]): number|null{
 
 }
 
-// makes each colum in the table given range of airports 
-// range is based on search parameters ie. small airports are only from indexs x to y 
-export function catergorize<T>(arr: T[], main: T[], start: number, end:number):T[]{
-    const LENGTH = end-start; 
-    const category: T[] = new Array(LENGTH); 
-    for(let i=0; i<LENGTH; i++){
-        let index = arr[start + i]; 
-        category[i] = main[index]; 
-    }
-
-    return category; 
-}
-
 // generated from GPT-4
 // function that takes an array of strings and returns an object where the keys are the unique strings and the values are arrays of all occurrences of the string
 // O(n)
