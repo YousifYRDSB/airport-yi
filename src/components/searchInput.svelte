@@ -1,6 +1,6 @@
 <script lang='ts'>
 	import {RadioGroup, RadioItem} from '@skeletonlabs/skeleton';
-	import {search, distances, displacements} from "../functions/sort-search"
+	import {search, distances, displacements, mergeSort} from "../functions/sort-search"
 	import type { Writable } from 'svelte/store';
 	import { removeNumberFromArray } from '../functions/data-operations';
 
@@ -10,7 +10,6 @@
 	export let selectedAirport: Writable<number[]>;
 	export let calculatedDistance: Writable<number[]>
 
-	let airportInfo: any[] =  []; 
 	let searchInput: string = '' 
 	let searchType: string = "id";
 
@@ -85,22 +84,24 @@
 	}
 
 	function getDistanceHandler(){
-		calculatedDistance.set(calculateDistance($selectedAirport))
+		calculatedDistance.set(calculateDistance($selectedAirport));
+	
 	}
+
 
 	let closestIndinces: any[] = []; 
 	function findCloseAirports(air1:number, air2:number){
-		const lat1 = data.latitude[air1]; 
-		const lat2 = data.latitude[air2];
-		const lon1 = data.longitude[air1];
-		const lon2 = data.longitude[air2]; 
+		const lat1 = data.airports.latitude_deg[air1]; 
+		const lat2 = data.airports.latitude_deg[air2];
+		const lon1 = data.airports.longitude_deg[air1];
+		const lon2 = data.airports.longitude_deg[air2]; 
 
 		let distanceRecord:any[] = [];
 		let latCenter = (lat1 +lat2)/2;
 		let lonCenter = (lon1 + lon2)/2;
 
 		for(let i =0; i<data.length; i++){
-			let transferDistance = distances(latCenter, data.latitude[i], lonCenter, data.longitude[i]);
+			let transferDistance = distances(latCenter, data.airports.latitude_deg[i], lonCenter, data.airports.longitude_deg[i]);
 			distanceRecord = [...distanceRecord, transferDistance]; 
 
 		}
@@ -126,10 +127,10 @@
 		const right:number[] = arr.slice(mid); 
 
 		const distance = distances(
-			data.latitude[closestIndinces[transfers]], 
-			data.latitude[closestIndinces[mid]],
-			data.longitude[closestIndinces[transfers]], 
-			data.longitude[closestIndinces[mid]]
+			data.airports.latitude_deg[closestIndinces[transfers]], 
+			data.airports.latitude_deg[closestIndinces[mid]],
+			data.airports.longitude_deg[closestIndinces[transfers]], 
+			data.airports.longitude_deg[closestIndinces[mid]]
 		); 
 
 		if(distance === undefined){
