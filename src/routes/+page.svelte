@@ -6,7 +6,6 @@
 	// import '../app.postcss';
 	import Table from '../components/table.svelte';
 	import WorldRoute from '../components/worldRoute.svelte';
-	import {mergeSort, search} from "../functions/sort-search"
 	import SearchInput from "../components/searchInput.svelte"
 	import { writable } from 'svelte/store';
 	import PerformanceLog from '../components/showPerformance.svelte'

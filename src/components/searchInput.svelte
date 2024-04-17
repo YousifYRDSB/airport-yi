@@ -1,6 +1,5 @@
 <script lang='ts'>
 	import {RadioGroup, RadioItem} from '@skeletonlabs/skeleton';
-	import {search, distances, displacements, mergeSort} from "../functions/sort-search"
 	import {search, haversineDistance, mergeSort} from "../functions/sort-search"
 	import type { Writable } from 'svelte/store';
 	import { removeNumberFromArray } from '../functions/data-operations';
@@ -108,8 +107,6 @@
 		selectedAirport.set(newArray)
 	}
 
-	function getDistanceHandler(){
-		calculatedDistance.set(calculateDistance($selectedAirport));
 	
 	function getDataHandler(){
 		if($selectedAirport.length){
@@ -119,95 +116,79 @@
 		}
 	}
 
-
 	let closestIndinces: any[] = []; 
 	function findCloseAirports(air1:number, air2:number){
+		console.log(data)
 		const lat1 = data.airports.latitude_deg[air1]; 
 		const lat2 = data.airports.latitude_deg[air2];
 		const lon1 = data.airports.longitude_deg[air1];
 		const lon2 = data.airports.longitude_deg[air2]; 
-	// let closestIndinces: any[] = []; 
-	// function findCloseAirports(air1:number, air2:number){
-	// 	console.log(data)
-	// 	const lat1 = data.airports.latitude_deg[air1]; 
-	// 	const lat2 = data.airports.latitude_deg[air2];
-	// 	const lon1 = data.airports.longitude_deg[air1];
-	// 	const lon2 = data.airports.longitude_deg[air2]; 
 
-	// 	let distanceRecord:any[] = [];
-	// 	let latCenter = (lat1 +lat2)/2;
-	// 	let lonCenter = (lon1 + lon2)/2;
+		let distanceRecord:any[] = [];
+		let latCenter = (lat1 +lat2)/2;
+		let lonCenter = (lon1 + lon2)/2;
 
-		for(let i =0; i<data.length; i++){
-			let transferDistance = distances(latCenter, data.airports.latitude_deg[i], lonCenter, data.airports.longitude_deg[i]);
+		for(let i =0; i<data.airports.latitude_deg.length; i++){
+			let transferDistance = haversineDistance(latCenter, data.airports.latitude_deg[i], lonCenter, data.airports.longitude_deg[i]);
 			distanceRecord = [...distanceRecord, transferDistance]; 
-	// 	for(let i =0; i<data.airports.latitude_deg.length; i++){
-	// 		let transferDistance = haversineDistance(latCenter, data.airports.latitude_deg[i], lonCenter, data.airports.longitude_deg[i]);
-	// 		distanceRecord = [...distanceRecord, transferDistance]; 
 
-	// 	}
+		}
 
-	// 	mergeSort(distanceRecord); 
+		mergeSort(distanceRecord); 
 		
-	// 	for(let i =0; i<6; i++){
-	// 		closestIndinces = [air1, ...closestIndinces, distanceRecord[i], air2]; 
-	// 	}
+		for(let i =0; i<6; i++){
+			closestIndinces = [air1, ...closestIndinces, distanceRecord[i], air2]; 
+		}
 
-	// 	return closestIndinces; 
+		return closestIndinces; 
 
-	// }
+	}
 
-	// let distanceSelection: number[] = []; 
-	// function findShortest(arr: number[], transfers:number, currentDistance: number):number | undefined{
-	// 	if(transfers === 5){
-	// 		distanceSelection = [...distanceSelection, currentDistance]
-	// 		return currentDistance; 
-	// 	}
-	// 	const mid:number = Math.floor(arr.length/2); 
-	// 	const left:number[]= arr.slice(0,mid); 
-	// 	const right:number[] = arr.slice(mid); 
+	let distanceSelection: number[] = []; 
+	function findShortest(arr: number[], transfers:number, currentDistance: number):number | undefined{
+		if(transfers === 5){
+			distanceSelection = [...distanceSelection, currentDistance]
+			return currentDistance; 
+		}
+		const mid:number = Math.floor(arr.length/2); 
+		const left:number[]= arr.slice(0,mid); 
+		const right:number[] = arr.slice(mid); 
 
-		const distance = distances(
-			data.airports.latitude_deg[closestIndinces[transfers]], 
-			data.airports.latitude_deg[closestIndinces[mid]],
-			data.airports.longitude_deg[closestIndinces[transfers]], 
-			data.airports.longitude_deg[closestIndinces[mid]]
+		const distance = haversineDistance(
+			data.latitude[closestIndinces[transfers]], 
+			data.latitude[closestIndinces[mid]],
+			data.longitude[closestIndinces[transfers]], 
+			data.longitude[closestIndinces[mid]]
 		); 
-	// 	const distance = haversineDistance(
-	// 		data.latitude[closestIndinces[transfers]], 
-	// 		data.latitude[closestIndinces[mid]],
-	// 		data.longitude[closestIndinces[transfers]], 
-	// 		data.longitude[closestIndinces[mid]]
-	// 	); 
 
-	// 	if(distance === undefined){
-	// 		return undefined; 
-	// 	}
-	// 	findShortest(left, transfers + 1, currentDistance + distance);
+		if(distance === undefined){
+			return undefined; 
+		}
+		findShortest(left, transfers + 1, currentDistance + distance);
 
-	// 	findShortest(right, transfers + 1,  currentDistance + distance); 
+		findShortest(right, transfers + 1,  currentDistance + distance); 
 
 		
-	// }
+	}
 
 
-	// function foundShortest(air1:number, air2:number):number{
-	// 	findCloseAirports(air1, air2); 
-	// 	findShortest(closestIndinces, 0, 0); 
-	// 	removeNumberFromArray(0, distanceSelection, true)
-	// 	for(let i=0; i<distanceSelection.length; i++){
-	// 		for(let j=i; j>0; j--){
-	// 			if(distanceSelection[j]<distanceSelection[j-1]){
-	// 				let value: number= distanceSelection[j]; 
-    //             	let prevValue:number  = distanceSelection[j-1]; 
-    //             	distanceSelection[j] = prevValue; 
-    //             	distanceSelection[j-1] = value; 
-	// 			}
-	// 		}
-	// 	}
-	// 	return distanceSelection[0]; 
+	function foundShortest(air1:number, air2:number):number{
+		findCloseAirports(air1, air2); 
+		findShortest(closestIndinces, 0, 0); 
+		removeNumberFromArray(0, distanceSelection, true)
+		for(let i=0; i<distanceSelection.length; i++){
+			for(let j=i; j>0; j--){
+				if(distanceSelection[j]<distanceSelection[j-1]){
+					let value: number= distanceSelection[j]; 
+                	let prevValue:number  = distanceSelection[j-1]; 
+                	distanceSelection[j] = prevValue; 
+                	distanceSelection[j-1] = value; 
+				}
+			}
+		}
+		return distanceSelection[0]; 
 		
-	// }
+	 }
 </script>
 
 <div class="flex flex-col w-[50vw]">
