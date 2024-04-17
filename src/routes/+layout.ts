@@ -67,7 +67,6 @@ export async function load() {
                 sortedLatitudes: sortedLatitudes,
                 sortedLongitudes: sortedLongitudes,
                 performance: [["mergeSort(name)", "mergeSort(latitude)", "margeSort(longitude)", "categorySort(type)", "categorySort(country)", "mergeSort(region)", "categorySort(continent)"], [nameSortElapsed, latitudeSortElapsed, longitudeSortElapsed, typeSortElapsed, countrySortElapsed, regionSortElapsed, continentSortElapsed]],
-                performanceData: writable(["mergeSort(name)", "mergeSort(latitude)", "margeSort(longitude)", "categorySort(type)", "categorySort(country)", "mergeSort(region)", "categorySort(continent)"]),
         };
 }
 

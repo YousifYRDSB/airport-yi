@@ -37,7 +37,7 @@ console.log('test')
 		</h2>
 		<SearchInput data={data} performanceData={performanceData} {calculatedDistance} {searchedIndexes} {selectedAirport}/> 
 		<div class="flex">
-			<WorldRoute data={data} routes={undefined} {searchedIndexes} {calculatedDistance} {selectedAirport}/>
+			<WorldRoute data={data} optimalPath={undefined} {searchedIndexes} {calculatedDistance} {selectedAirport}/>
 			<Table data={data} searchedIndexes={$searchedIndexes} {selectedAirport}/>
 		</div>
 			

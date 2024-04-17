@@ -2,12 +2,16 @@
 	import '../app.postcss';
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
 	import {writable} from 'svelte/store';
+	import { Toast } from '@skeletonlabs/skeleton';
+import { initializeStores } from '@skeletonlabs/skeleton';
 
-	export let data: any;
-	let myStore = data.performanceData
-	console.log("PERFORAMCNEDATA", ($myStore))
+initializeStores();
+
+	// export let data: any;
+
 </script>
 
+<Toast />
 <!-- App Shell -->
 <AppShell>
 	<svelte:fragment slot="header">

@@ -14,7 +14,7 @@
 	export let data: any;
 	export let searchedIndexes: Writable<number[]>;
   export let selectedAirport: Writable<number[]>;
-	export let routes: any;
+	export let optimalPath: any;
 
 	let locations: number[][] = [];
   let selectedLocations: number[] = [];
@@ -38,9 +38,6 @@
 	const laLonLat = [-118.2426, 34.0549];
 	let route = [londonLonLat, newYorkLonLat, laLonLat, [-89.0059, 50.7128]];
 	let currentSegment = 0;
-	let geoInterpolator = d3.geoInterpolate(route[currentSegment], route[currentSegment + 1]);
-	let u = 0;
-	let speedAdjustment = calculateSpeedAdjustment(route);
 
 	function resize() {
 		console.log('RESIZE');
@@ -59,7 +56,7 @@
 				console.log('EXTENT', extent);
 			}
 			extent = [...extent, ...selectedLocations]
-			console.log(extent)
+			// console.log(extent)
 			
 			projection = d3.geoMercator().fitExtent(
 				[
@@ -74,9 +71,11 @@
 
 			const geoGenerator = d3.geoPath().projection(projection).pointRadius(3).context(context);
       context.clearRect(0, 0, 800, 600);
+
 			drawMap(geoGenerator);
 
       if(selectedLocations) {
+		drawLines(geoGenerator, selectedLocations);
         context.beginPath();
 		context.fillStyle = '#3ae0cd'; // Change color as needed
 		selectedLocations.forEach((point: any) => {
@@ -122,49 +121,8 @@
 			'https://gist.githubusercontent.com/d3indepth/f28e1c3a99ea6d84986f35ac8646fac7/raw/c58cede8dab4673c91a3db702d50f7447b373d98/ne_110m_land.json'
 		);
 
-		function update() {
-			if (!canvas) {
-				// console.error('Canvas is not initialized.');
-				return;
-			}
-
-			context.clearRect(0, 0, canvas.width, canvas.height);
-			drawMap(geoGenerator);
-
-      if(routes){
-			drawLines(geoGenerator); // Ensure lines are drawn
-			drawMovingPoint(geoGenerator);
-			// resize(projection);
-      
-
-			u += speedAdjustment[currentSegment];
-			if (u > 1) {
-				u = 0;
-				currentSegment++;
-				if (currentSegment < route.length - 1) {
-					geoInterpolator = d3.geoInterpolate(route[currentSegment], route[currentSegment + 1]);
-				} else {
-					currentSegment = 0;
-					geoInterpolator = d3.geoInterpolate(route[currentSegment], route[currentSegment + 1]);
-				}
-			}
-
-			requestAnimationFrame(update);
-    }
-		}
-
-		// update();
 	});
 
-	function calculateSpeedAdjustment(points: number[][]) {
-		let distances = [];
-		for (let i = 0; i < points.length - 1; i++) {
-			let distance = d3.geoDistance(points[i], points[i + 1]);
-			distances.push(distance);
-		}
-		let maxDistance = Math.max(...distances);
-		return distances.map((d) => 0.01 * (maxDistance / d));
-	}
 
 	function drawMap(geoGenerator: any) {
 		context.lineWidth = 0.5;
@@ -194,16 +152,16 @@
 	}
 
 	// Function to draw lines connecting locations
-	function drawLines(geoGenerator: any) {
+	function drawLines(geoGenerator: any, linePoints: number[][]) {
 		context.beginPath();
 		context.strokeStyle = '#3ae0cd'; // Change color as needed
-		route.forEach((point, i) => {
-			if (i < route.length - 1) {
+		linePoints.forEach((point, i) => {
+			if (i < linePoints.length - 1) {
 				geoGenerator({
 					type: 'Feature',
 					geometry: {
 						type: 'LineString',
-						coordinates: [point, route[i + 1]]
+						coordinates: [point, linePoints[i + 1]]
 					}
 				});
 			}
@@ -211,20 +169,13 @@
 		context.stroke();
 	}
 
-	function drawMovingPoint(geoGenerator: any) { 
-		context.beginPath();
-		context.fillStyle = '#3ae0cd';
-		let interpolatedPoint = geoInterpolator(u);
-		geoGenerator({ type: 'Feature', geometry: { type: 'Point', coordinates: interpolatedPoint } });
-		context.fill();
-	}
 </script>
 <div class="relative">
 	{#if $calculatedDistance.length}
-  <p class="absolute top-0 left-[250px] text-xl text-red-500 m-2">Distance is {$calculatedDistance[0].toFixed(0)}m, Displacement is {$calculatedDistance[1].toFixed(0)}m</p>
+  <p class="absolute top-0 left-[250px] text-xl text-green-500 m-2">Distance is {$calculatedDistance[0].toFixed(0)}km, Displacement is {$calculatedDistance[1].toFixed(0)}km</p>
 	{/if}
   {#if locations.length == 0}
-  <p class="absolute top-[45%] left-[10%] text-red-800 m-2">No airport selected! Select one to display it on the map</p>
+  <p class="absolute top-[45%] left-[10%] text-red-800 m-2">No airports searched! Search one to display it on the map</p>
 {/if}
   <canvas
       class="bg-black rounded-tl-lg rounded-bl-lg"

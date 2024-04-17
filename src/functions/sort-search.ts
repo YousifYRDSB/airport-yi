@@ -151,16 +151,25 @@ export function categorySort(strings: string[]): string[] {
  
 
 // bonus 1 
-export function distances(lat1:number, lat2:number, lon1:number,lon2:number): number{
-    
-  const dlon = lon2 - lon1;
-  const dlat = lat2 - lat1; 
-  const R = 6371; 
+export function haversineDistance(lat1:number, lon1: number, lat2: number, lon2: number) {
+  function toRadians(degrees: number) {
+      return degrees * Math.PI / 180;
+  }
 
-  const d = 2*R*Math.asin(Math.sqrt((1-Math.cos(dlat)+ Math.cos(lat1)*Math.cos(lat2)*(1-Math.cos(dlon)))/2)); 
+  const earthRadiusKm = 6371;
+  const lat1InRadians = toRadians(lat1);
+  const lat2InRadians = toRadians(lat2);
+  const deltaLatitude = toRadians(lat2 - lat1);
+  const deltaLongitude = toRadians(lon2 - lon1);
 
-  return d; 
+  const a = Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2) +
+            Math.cos(lat1InRadians) * Math.cos(lat2InRadians) *
+            Math.sin(deltaLongitude / 2) * Math.sin(deltaLongitude / 2);
+  const angularDistanceInRadians = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return earthRadiusKm * angularDistanceInRadians;
 }
+
 
 
 
