@@ -1,5 +1,6 @@
 <script lang='ts'>
 	import {RadioGroup, RadioItem} from '@skeletonlabs/skeleton';
+	import {search, distances, displacements, mergeSort} from "../functions/sort-search"
 	import {search, haversineDistance, mergeSort} from "../functions/sort-search"
 	import type { Writable } from 'svelte/store';
 	import { removeNumberFromArray } from '../functions/data-operations';
@@ -13,7 +14,6 @@
 	export let selectedAirport: Writable<number[]>;
 	export let calculatedDistance: Writable<number[]>
 
-	let airportInfo: any[] =  []; 
 	let searchInput: string = '' 
 	let searchType: string = "id";
 	let selectedMode = "getDistance"
@@ -108,6 +108,9 @@
 		selectedAirport.set(newArray)
 	}
 
+	function getDistanceHandler(){
+		calculatedDistance.set(calculateDistance($selectedAirport));
+	
 	function getDataHandler(){
 		if($selectedAirport.length){
 		if(selectedMode === "getDistance")
@@ -116,6 +119,13 @@
 		}
 	}
 
+
+	let closestIndinces: any[] = []; 
+	function findCloseAirports(air1:number, air2:number){
+		const lat1 = data.airports.latitude_deg[air1]; 
+		const lat2 = data.airports.latitude_deg[air2];
+		const lon1 = data.airports.longitude_deg[air1];
+		const lon2 = data.airports.longitude_deg[air2]; 
 	// let closestIndinces: any[] = []; 
 	// function findCloseAirports(air1:number, air2:number){
 	// 	console.log(data)
@@ -128,6 +138,9 @@
 	// 	let latCenter = (lat1 +lat2)/2;
 	// 	let lonCenter = (lon1 + lon2)/2;
 
+		for(let i =0; i<data.length; i++){
+			let transferDistance = distances(latCenter, data.airports.latitude_deg[i], lonCenter, data.airports.longitude_deg[i]);
+			distanceRecord = [...distanceRecord, transferDistance]; 
 	// 	for(let i =0; i<data.airports.latitude_deg.length; i++){
 	// 		let transferDistance = haversineDistance(latCenter, data.airports.latitude_deg[i], lonCenter, data.airports.longitude_deg[i]);
 	// 		distanceRecord = [...distanceRecord, transferDistance]; 
@@ -154,6 +167,12 @@
 	// 	const left:number[]= arr.slice(0,mid); 
 	// 	const right:number[] = arr.slice(mid); 
 
+		const distance = distances(
+			data.airports.latitude_deg[closestIndinces[transfers]], 
+			data.airports.latitude_deg[closestIndinces[mid]],
+			data.airports.longitude_deg[closestIndinces[transfers]], 
+			data.airports.longitude_deg[closestIndinces[mid]]
+		); 
 	// 	const distance = haversineDistance(
 	// 		data.latitude[closestIndinces[transfers]], 
 	// 		data.latitude[closestIndinces[mid]],
