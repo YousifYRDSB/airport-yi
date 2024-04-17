@@ -9,7 +9,7 @@
 	let foregroundContext: CanvasRenderingContext2D;
 	let geojson = {};
 	let projection: d3.GeoProjection;
-	export let calculatedDistance: Writable<number[]>
+	export let calculatedInfo: Writable<string>
 
 	export let data: any;
 	export let searchedIndexes: Writable<number[]>;
@@ -171,8 +171,8 @@
 
 </script>
 <div class="relative">
-	{#if $calculatedDistance.length}
-  <p class="absolute top-0 left-[250px] text-xl text-green-500 m-2">Distance is {$calculatedDistance[0].toFixed(0)}km, Displacement is {$calculatedDistance[1].toFixed(0)}km</p>
+	{#if $calculatedInfo}
+  <p class="absolute top-0 left-[250px] text-xl text-green-500 m-2">${$calculatedInfo}</p>
 	{/if}
   {#if locations.length == 0}
   <p class="absolute top-[45%] left-[10%] text-red-800 m-2">No airports searched! Search one to display it on the map</p>

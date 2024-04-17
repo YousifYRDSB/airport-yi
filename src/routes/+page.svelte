@@ -16,7 +16,7 @@
 	let searchedIndexes = writable([]);
 	let performanceData = writable(data.performance);
 	let selectedAirport = writable([])
-	let calculatedDistance = writable([])
+	let calculatedInfo = writable("")
 	
     $: data.performance = $performanceData
 
@@ -30,9 +30,9 @@
 		<h2 class="h2">
 			<span class="bg-gradient-to-br from-red-700 to-red-500 bg-clip-text text-transparent box-decoration-clone">Airport Lookup and Routing</span>
 		</h2>
-		<SearchInput data={data} performanceData={performanceData} {calculatedDistance} {searchedIndexes} {selectedAirport}/> 
+		<SearchInput data={data} performanceData={performanceData} {calculatedInfo} {searchedIndexes} {selectedAirport}/> 
 		<div class="flex">
-			<WorldRoute data={data} optimalPath={undefined} {searchedIndexes} {calculatedDistance} {selectedAirport}/>
+			<WorldRoute data={data} optimalPath={undefined} {searchedIndexes} {calculatedInfo} {selectedAirport}/>
 			<Table data={data} searchedIndexes={$searchedIndexes} {selectedAirport}/>
 		</div>
 			

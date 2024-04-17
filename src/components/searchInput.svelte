@@ -11,7 +11,7 @@
 	export let searchedIndexes: Writable<number[]>; // stores the indexes of the airports based on the search parameters 
 	export let performanceData: Writable<any>; // the performance/time of running the search 
 	export let selectedAirport: Writable<number[]>; //stores the selected airports to be used as chips  
-	export let calculatedDistance: Writable<number[]> // stores the distances between the airports 
+	export let calculatedInfo: Writable<string> // stores the distances between the airports 
 
 
 	let searchInput: string = '' 
@@ -116,9 +116,11 @@ function calculateDistance(indices: number[]): number[] {
 	
 	function getDataHandler(){
 		if($selectedAirport.length){
-		if(selectedMode === "getDistance")
-			calculatedDistance.set(calculateDistance($selectedAirport))
-		// else foundShortest($selectedAirport[0], $selectedAirport[$selectedAirport.length - 1])
+		if(selectedMode === "getDistance"){
+			const info = calculateDistance($selectedAirport)
+		calculatedInfo.set(`distance is ${info[0].toFixed(0)} km, displacement is ${info[1].toFixed(0)} km`)
+		}
+		else calculatedInfo.set(computeDistance($selectedAirport[0], $selectedAirport[$selectedAirport.length - 1], 3))
 		}
 	}
 
@@ -194,7 +196,7 @@ function calculateDistance(indices: number[]): number[] {
 		findRoutes(air1, air2, n); 
 		let totalDistance: any =0; 
 		for(let i=0; i<n+2; i++){
-			totalDistance += distances(usedAirports[i][0], usedAirports[i][1], usedAirports[i+1][0], usedAirports[i+1][1]); 
+			totalDistance += haversineDistance(usedAirports[i][0], usedAirports[i][1], usedAirports[i+1][0], usedAirports[i+1][1]); 
 		}
 
 		let time:any = flightTime(data.airports.type[air1], totalDistance)
