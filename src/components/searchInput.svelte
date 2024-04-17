@@ -189,6 +189,7 @@ function calculateDistance(indices: number[]): number[] {
 			return t + ' hr(s)'
 	}
 
+	// finds the total distance as it iterates through each transfer, returns distance and time 
 	function computeDistance(air1:number, air2:number, n:number): any{
 		findRoutes(air1, air2, n); 
 		let totalDistance: any =0; 
