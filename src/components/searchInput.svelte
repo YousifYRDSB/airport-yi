@@ -7,16 +7,20 @@
 
 	const toastStore = getToastStore();
 
-	export let data: any;
-	export let searchedIndexes: Writable<number[]>;
-	export let performanceData: Writable<any>;
-	export let selectedAirport: Writable<number[]>;
-	export let calculatedDistance: Writable<number[]>
+	export let data: any; // data of the airports 
+	export let searchedIndexes: Writable<number[]>; // stores the indexes of the airports based on the search parameters 
+	export let performanceData: Writable<any>; // the performance/time of running the search 
+	export let selectedAirport: Writable<number[]>; //stores the selected airports to be used as chips  
+	export let calculatedDistance: Writable<number[]> // stores the distances between the airports 
+
 
 	let searchInput: string = '' 
 	let searchType: string = "id";
 	let selectedMode = "getDistance"
 
+	let usedAirports: any[] = []; //the airports that will be transfer points when going from airport a to airport b 
+
+	// searches for the input airport based on search type 
 	async function searchAirport(query: string, searchType: string) {
 		let searchedIndex: number[] = [];
 
@@ -29,21 +33,22 @@
 		searchedIndex = data.sortedTypes[query];
 		else if(searchType == "country")
 		searchedIndex = data.sortedCountries[query];
+		
+		// logs the performance time 
 		const endTime = performance.now();
-
 		const elapsedTime = (endTime - startTime);
-
-		let performanceTemp = [...$performanceData]
-		console.log(performanceTemp)
-		performanceTemp[1] = [...performanceTemp[1], elapsedTime]
-		performanceTemp[0] = [...performanceTemp[0], "search"]
-		performanceData.set(performanceTemp)
-		console.log(performanceTemp)
+		let performanceTemp = [...$performanceData];
+		console.log(performanceTemp);
+		performanceTemp[1] = [...performanceTemp[1], elapsedTime];
+		performanceTemp[0] = [...performanceTemp[0], "search"];
+		performanceData.set(performanceTemp);
+		console.log(performanceTemp);
 		searchedIndexes.set(searchedIndex);
 	}
 
 
-	function calculateDistance(indices: number[]): number[] {
+// calculates the distance between airports (bonus 1 and 2)
+function calculateDistance(indices: number[]): number[] {
     const latIndex: number = 0;
     const lonIndex: number = 1;
     let totalDistance: number = 0;
@@ -117,79 +122,87 @@
 		}
 	}
 
-	let closestIndinces: any[] = []; 
-	function findCloseAirports(air1:number, air2:number){
-		console.log(data)
+	// finds the closest airports to distance between airport A and airport B 
+	function findRoutes(air1:number, air2:number, n:number): number[][]{
+		// longitude and latitude for airports A and B 
 		const lat1 = data.airports.latitude_deg[air1]; 
 		const lat2 = data.airports.latitude_deg[air2];
 		const lon1 = data.airports.longitude_deg[air1];
 		const lon2 = data.airports.longitude_deg[air2]; 
 
-		let distanceRecord:any[] = [];
-		let latCenter = (lat1 +lat2)/2;
-		let lonCenter = (lon1 + lon2)/2;
+		let airports: any[] = []; 
+		let left = 0; 
+  		let right = data.airports.length -1; 
 
-		for(let i =0; i<data.airports.latitude_deg.length; i++){
-			let transferDistance = haversineDistance(latCenter, data.airports.latitude_deg[i], lonCenter, data.airports.longitude_deg[i]);
-			distanceRecord = [...distanceRecord, transferDistance]; 
+		// the distance between airports A and B is equally divided by the number of transfers 
+		// each equal part becomes a indicator point to where the transfer airport should be - find the airport closest to that point
+		for(let i=0; i<=n; i++){
+			// the points for the transfers (longitude and latitude)
+			let latPoint= (lat1 +lat2)/i;
+			let lonPoint= (lon1 + lon2)/i;
+			
+			// does a binary search and returns the airport with the closest longitude and latitude to the reference points 
+			while (left < right) {
+				const mid = Math.floor((left + right) / 2);
 
-		}
+				// replaces index of latitude and longitude in the inner array
+				const midLat = data.airports.latitude_deg(mid); 
+				const midLon = data.airports.longitude_deg(mid);
 
-		mergeSort(distanceRecord); 
-		
-		for(let i =0; i<6; i++){
-			closestIndinces = [air1, ...closestIndinces, distanceRecord[i], air2]; 
-		}
-
-		return closestIndinces; 
-
-	}
-
-	let distanceSelection: number[] = []; 
-	function findShortest(arr: number[], transfers:number, currentDistance: number):number | undefined{
-		if(transfers === 5){
-			distanceSelection = [...distanceSelection, currentDistance]
-			return currentDistance; 
-		}
-		const mid:number = Math.floor(arr.length/2); 
-		const left:number[]= arr.slice(0,mid); 
-		const right:number[] = arr.slice(mid); 
-
-		const distance = haversineDistance(
-			data.latitude[closestIndinces[transfers]], 
-			data.latitude[closestIndinces[mid]],
-			data.longitude[closestIndinces[transfers]], 
-			data.longitude[closestIndinces[mid]]
-		); 
-
-		if(distance === undefined){
-			return undefined; 
-		}
-		findShortest(left, transfers + 1, currentDistance + distance);
-
-		findShortest(right, transfers + 1,  currentDistance + distance); 
-
-		
-	}
-
-
-	function foundShortest(air1:number, air2:number):number{
-		findCloseAirports(air1, air2); 
-		findShortest(closestIndinces, 0, 0); 
-		removeNumberFromArray(0, distanceSelection, true)
-		for(let i=0; i<distanceSelection.length; i++){
-			for(let j=i; j>0; j--){
-				if(distanceSelection[j]<distanceSelection[j-1]){
-					let value: number= distanceSelection[j]; 
-                	let prevValue:number  = distanceSelection[j-1]; 
-                	distanceSelection[j] = prevValue; 
-                	distanceSelection[j-1] = value; 
+				if (latPoint < midLat || (latPoint === midLat && lonPoint < midLon)) {
+					right = mid;
+				} else {
+					left = mid + 1;
 				}
 			}
+			// stores all the longitude and latitude values of the transfer airports into a 2D array 
+			airports = [...airports, [data.airports.latitude_deg[left], data.airports.longitude_deg[left]]];
+
 		}
-		return distanceSelection[0]; 
+	
+		// adds the first and last airport (airport A and B) to the array 
+		usedAirports = [
+			[data.airports.latitude_deg[air1], data.airports.longitude_deg[air1]],
+			 ...airports, 
+			[data.airports.latitude_deg[air2], data.airports.longitude_deg[air2]]
+		]; 
+		return usedAirports; 
+
+	}
 		
-	 }
+	
+
+	// calculates the flight time based on the type of irport 
+	function flightTime(type: string, distance:number):any{
+			let velocity:number = 0;   
+			if(type === 'large_airport'){
+				velocity = 800; 
+			}else if(type === 'small_airport'){
+				velocity = 230; 
+			}else if(type === 'helicopter'){
+				velocity = 160; 
+			}else{
+				return undefined; 
+			}
+
+			let t = distance/velocity; 
+			return t + ' hr(s)'
+	}
+
+	// finds the total distance as it iterates through each transfer, returns distance and time 
+	function computeDistance(air1:number, air2:number, n:number): any{
+		findRoutes(air1, air2, n); 
+		let totalDistance: any =0; 
+		for(let i=0; i<n+2; i++){
+			totalDistance += distances(usedAirports[i][0], usedAirports[i][1], usedAirports[i+1][0], usedAirports[i+1][1]); 
+		}
+
+		let time:any = flightTime(data.airports.type[air1], totalDistance)
+		let information:any = 'Distance: ' + totalDistance + ' Time: ' +  time; 
+
+		return information; 
+		
+	}
 </script>
 
 <div class="flex flex-col w-[50vw]">
