@@ -11,12 +11,14 @@
 	export let searchedIndexes: Writable<number[]>; // stores the indexes of the airports based on the search parameters 
 	export let performanceData: Writable<any>; // the performance/time of running the search 
 	export let selectedAirport: Writable<number[]>; //stores the selected airports to be used as chips  
-	export let calculatedInfo: Writable<string> // stores the distances between the airports 
+	export let calculatedInfo: Writable<string>; // stores the distances between the airports 
 
 
 	let searchInput: string = '' 
 	let searchType: string = "id";
 	let selectedMode = "getDistance"
+
+	
 
 	let usedAirports: any[] = []; //the airports that will be transfer points when going from airport a to airport b 
 
@@ -74,9 +76,9 @@ function calculateDistance(indices: number[]): number[] {
     ]);
 
     // Ensure there are at least two valid airports to calculate meaningful distances
-    if (airportInfo.length < 2) {
+    if (airportInfo.length < 2 || airportInfo.length > 6) {
 		toastStore.trigger({
-	message: 'Please input more than one valid airport to calculate distance.',
+	message: 'Please input 2-6 valid airports to calculate distance.',
 	timeout: 2000,
 	background: 'variant-filled-warning',
 });
@@ -193,6 +195,16 @@ function calculateDistance(indices: number[]): number[] {
 
 	// finds the total distance as it iterates through each transfer, returns distance and time 
 	function computeDistance(air1:number, air2:number, n:number): any{
+
+		if (!($selectedAirport.length == 2)) {
+		toastStore.trigger({
+	message: 'Please input two valid airports',
+	timeout: 2000,
+	background: 'variant-filled-warning',
+});
+        return [];
+    }
+
 		findRoutes(air1, air2, n); 
 		let totalDistance: any =0; 
 		for(let i=0; i<n+2; i++){
@@ -200,7 +212,7 @@ function calculateDistance(indices: number[]): number[] {
 		}
 
 		let time:any = flightTime(data.airports.type[air1], totalDistance)
-		let information:any = 'Distance: ' + totalDistance + ' Time: ' +  time; 
+		let information:any = 'Distance: ' + totalDistance + ' Time: ' +  time + ' at the coordinates: ' + usedAirports; 
 
 		return information; 
 		

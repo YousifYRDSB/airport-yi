@@ -65,6 +65,7 @@
 	}
 
 	function tableSelectionHandler(event: CustomEvent) {
+
 		if(!checkIfInArray(event.detail[7], $selectedAirport))
 		 selectedAirport.set([...$selectedAirport, event.detail[7]])
 	}
@@ -72,9 +73,6 @@
 </script>
 
 <span>
-	<!-- {#if containsNumber(searchedIndexes)}
-	<p style={"position: absolute; margin: 10px;"}>Please search to display table info</p>
-	{/if} -->
 	<Table interactive={true} source={tableSimple} on:selected={tableSelectionHandler} />
 	<Paginator showFirstLastButtons={true} bind:settings={paginationSettings} />
 </span>

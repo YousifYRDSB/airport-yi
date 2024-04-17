@@ -17,6 +17,7 @@
 	let performanceData = writable(data.performance);
 	let selectedAirport = writable([])
 	let calculatedInfo = writable("")
+	let selectedModeS = writable("")
 	
     $: data.performance = $performanceData
 

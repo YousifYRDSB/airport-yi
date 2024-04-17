@@ -172,7 +172,7 @@
 </script>
 <div class="relative">
 	{#if $calculatedInfo}
-  <p class="absolute top-0 left-[250px] text-xl text-green-500 m-2">${$calculatedInfo}</p>
+  <p class="w-[50%] overflow-auto absolute top-0 left-[250px] text-xl text-green-500 m-2">{$calculatedInfo}</p>
 	{/if}
   {#if locations.length == 0}
   <p class="absolute top-[45%] left-[10%] text-red-800 m-2">No airports searched! Search one to display it on the map</p>
