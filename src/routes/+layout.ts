@@ -17,6 +17,9 @@ interface AirportData {
       }
 
 /** @type {import('./$types').LayoutServerLoad} */
+
+//function runs when the web app loads, sorts through each category of data and sotres it in a global data object
+//also calculates the elapsed time for each sort
 export async function load() {
         const data = await loadJSON("DO_NOT_TOUCH/data.json")
         console.log(data)

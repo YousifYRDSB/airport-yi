@@ -10,8 +10,8 @@
 	export let searchedIndexes: number[] = [];
 		export let selectedAirport: Writable<number[]> = writable<number[]>([]);
 
-	let sourceData: any = []; // Initialize sourceData as an empty array
-	let paginatedSource: any = []; // Initialize paginatedSource as an empty array
+	let sourceData: any = []; // Original source data
+	let paginatedSource: any = []; // Paginated source data: only the data that is shown in the table on the current page
 	let tableSimple: TableSource = {
 		head: [],
 		body: [],
@@ -19,7 +19,7 @@
 		foot: []
 	};
 
-	// Reactive statement to update sourceData whenever searchedIndexes changes
+	// Reactive statement to update sourceData whenever searchedIndexes changes, implements logic for pagination
 	$: {
 		if (containsNumber(searchedIndexes)) {
 			let paginatedIndexes = searchedIndexes.slice(
@@ -39,6 +39,8 @@
 		amounts: [5]
 	} satisfies PaginationSettings;
 
+
+	// Updates the table based on the paginatedSource
 	function updateTable() {
 		tableSimple.head = ['Name', 'Id', 'Type', 'Iso_country', 'Iso_region', 'Longitude', 'Latitude'];
 		tableSimple.body = tableMapperValues(paginatedSource, [
@@ -64,6 +66,7 @@
 		paginationSettings.size = searchedIndexes.length;
 	}
 
+	// Handles table selection when the user clicks on a row
 	function tableSelectionHandler(event: CustomEvent) {
 
 		if(!checkIfInArray(event.detail[7], $selectedAirport))

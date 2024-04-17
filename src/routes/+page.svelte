@@ -1,5 +1,5 @@
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<!-- main file for the app -->
 
 
 <script lang="ts">
@@ -33,7 +33,7 @@
 		</h2>
 		<SearchInput data={data} performanceData={performanceData} {calculatedInfo} {searchedIndexes} {selectedAirport}/> 
 		<div class="flex">
-			<WorldRoute data={data} optimalPath={undefined} {searchedIndexes} {calculatedInfo} {selectedAirport}/>
+			<WorldRoute data={data} {searchedIndexes} {calculatedInfo} {selectedAirport}/>
 			<Table data={data} searchedIndexes={$searchedIndexes} {selectedAirport}/>
 		</div>
 			

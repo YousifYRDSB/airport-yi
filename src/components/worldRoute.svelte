@@ -6,7 +6,6 @@
 
 	let canvas: HTMLCanvasElement;
 	let context: CanvasRenderingContext2D;
-	let foregroundContext: CanvasRenderingContext2D;
 	let geojson = {};
 	let projection: d3.GeoProjection;
 	export let calculatedInfo: Writable<string>
@@ -14,10 +13,11 @@
 	export let data: any;
 	export let searchedIndexes: Writable<number[]>;
   export let selectedAirport: Writable<number[]>;
-	export let optimalPath: any;
 
 	let locations: number[][] = [];
   let selectedLocations: number[] = [];
+
+  //subscribe to the selectedAirport store, and update selectedLocations, as well as resize (/redraw) the map
   $: {
   if(containsNumber($selectedAirport))
   selectedLocations = getCoordinatesByIndex(data.airports, $selectedAirport);
@@ -27,36 +27,34 @@
   
 }
 
+//subscribe to the searchedIndexes store, and update locations, as well as resize (/redraw) the map
 	$: {
 		if (containsNumber($searchedIndexes))
 			locations = getCoordinatesByIndex(data.airports, $searchedIndexes);
 		resize();
 	}
 
-	const londonLonLat = [0.1278, 51.5074];
-	const newYorkLonLat = [-74.0059, 40.7128];
-	const laLonLat = [-118.2426, 34.0549];
-	let route = [londonLonLat, newYorkLonLat, laLonLat, [-89.0059, 50.7128]];
-	let currentSegment = 0;
 
+
+	//function is called whenever data updates, resizes the canvas to fit the data, and redraws the map, as well as any selected points
 	function resize() {
-		console.log('RESIZE');
 
 		if (context) {
 			const buffer = 50;
 
 
 			let extent: any = locations;
+
+			//extra buffer if only one airport is selected
 			if (extent.length === 1) {
         console.log("LEGNTH IS ONE", locations);
 				extent = [
-					[locations[0][0] - 10, locations[0][1] - 10], // bottom-left corner of the rectangle
-					[locations[0][0] + 10, locations[0][1] + 10] // top-right corner of the rectangle
+					[locations[0][0] - 10, locations[0][1] - 10],
+					[locations[0][0] + 10, locations[0][1] + 10] 
 				];
 				console.log('EXTENT', extent);
 			}
 			extent = [...extent, ...selectedLocations]
-			// console.log(extent)
 			
 			projection = d3.geoMercator().fitExtent(
 				[
@@ -70,10 +68,12 @@
 			);
 
 			const geoGenerator = d3.geoPath().projection(projection).pointRadius(3).context(context);
-      context.clearRect(0, 0, 800, 600);
 
+			//clears the canvas before redrawing
+      context.clearRect(0, 0, 800, 600);
 			drawMap(geoGenerator);
 
+			//redraws the selected points, if they exist
       if(selectedLocations) {
 		drawLines(geoGenerator, selectedLocations);
         context.beginPath();
@@ -93,7 +93,10 @@
 		}
 	}
 
+	//callback runs when the wouldRoute component is mounted
+
 	onMount(async () => {
+		//intialize the canvas
 		const canvasContext = canvas.getContext('2d');
 		if (canvasContext) {
 			context = canvasContext;
@@ -101,12 +104,11 @@
 			console.error('Canvas context is null.');
 		}
 
-		const route = [londonLonLat, newYorkLonLat, laLonLat];
-
+		//define the projection
 		const projection = d3.geoMercator();
-		// Use fitSize to set the scale and translation of the projection to fit the route within the canvas size
-		const buffer = 100; // Adjust the buffer size as needed
 
+		//zooms the map to fit the data, plus a predefined buffer
+		const buffer = 100;
 		if (locations.length > 0)
 			projection.fitExtent(
 				[
@@ -115,8 +117,11 @@
 				],
 				{ type: 'LineString', coordinates: locations }
 			);
+
 		const geoGenerator = d3.geoPath().projection(projection).pointRadius(3).context(context);
 
+
+		//load the geographical data for the world map
 		geojson = await d3.json(
 			'https://gist.githubusercontent.com/d3indepth/f28e1c3a99ea6d84986f35ac8646fac7/raw/c58cede8dab4673c91a3db702d50f7447b373d98/ne_110m_land.json'
 		);
@@ -124,6 +129,7 @@
 	});
 
 
+	//draws the world map and other data on the canvas
 	function drawMap(geoGenerator: any) {
 		context.lineWidth = 0.5;
 		context.strokeStyle = '#bbb';
@@ -171,12 +177,18 @@
 
 </script>
 <div class="relative">
+
+	<!-- conditional rendering to display the calculated information from bonus questions -->
 	{#if $calculatedInfo}
   <p class="w-[50%] overflow-auto absolute top-0 left-[250px] text-xl text-green-500 m-2">{$calculatedInfo}</p>
 	{/if}
+
+	<!-- conditional rendering if no airport have been searched and canvas is blank -->
   {#if locations.length == 0}
   <p class="absolute top-[45%] left-[10%] text-red-800 m-2">No airports searched! Search one to display it on the map</p>
 {/if}
+
+<!-- canvas where all the data will be drawn -->
   <canvas
       class="bg-black rounded-tl-lg rounded-bl-lg"
       bind:this={canvas}

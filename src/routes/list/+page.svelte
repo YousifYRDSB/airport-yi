@@ -1,6 +1,5 @@
 <script lang="ts">
     import Table from '../../components/table.svelte';
-	//import {orderAirports} from "../../functions/sort-search"; 
     import { reverseArray, combineAllValues } from '../../functions/data-operations';
     import PerformanceLog from '../../components/showPerformance.svelte'
     export let data:any;
@@ -8,7 +7,14 @@
     let selectedCategory: string = '';
     let isAscending: boolean = true;
 
+
+    /**
+ * Handles the sorting of data with different sorting types based on the data structure
+ *
+ * @param {string} category - the category to be sorted
+ */
     function handleSort(category: string){
+        const startTime = performance.now();
         if(category == selectedCategory)
             isAscending = !isAscending
 
@@ -22,7 +28,6 @@
         }
         else {
             if(!Array.isArray(data[category])){
-                console.log(isAscending)
                 sortedIndexes =  isAscending ? combineAllValues(data[category]) : reverseArray(combineAllValues(data[category]))
             }
             else {
@@ -30,6 +35,11 @@
 
             }
         }
+        const endTime = performance.now();
+        const elapsedTime = (endTime - startTime);
+        let performanceTemp = [...data.performance];
+        data.performance[1] = [...performanceTemp[1], elapsedTime];
+        data.performance[0] = [...performanceTemp[0], "sort category"];
         
         selectedCategory = category
     }
@@ -37,10 +47,12 @@
 
 
  <p class="title"> ALL AIRPORTS </p> 
+
  <PerformanceLog performanceData={data.performance}/>
 
     <div class="buttons">
-        <!-- <button type="button" class="button btn variant-filled"><img src="https://cdn2.iconfinder.com/data/icons/4web-3/139/sort3-512.png" alt="button"/></button> -->
+        
+        <!-- toggleable buttons to change sorting order and type -->
         <div class="group btn-group variant-filled">
             <button type="button" on:click={() => handleSort('sortedNames')}>Name↑↓</button>
             <button type="button" on:click={() => handleSort('sortedTypes')}>Type↑↓</button>

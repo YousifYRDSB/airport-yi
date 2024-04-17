@@ -1,38 +1,12 @@
-# create-svelte
+Tech stack:
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+Svelte JS & Sveltekit - frontend state and data managment, 
+Skeleton UI - UI library
+TailwindCSS - CSS functionality in classes
+D3.JS - Data visualization for the world map
 
-## Creating a project
+to run:
 
-If you're seeing this, you've probably already done this step. Congrats!
+This project uses sveltekit, which is a framework with a lot of overhead, this means "npm run dev" may have unwanted overhead
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+To run the final production build, run "npm run build" followed by "npm run preview" and view the project in the localport

@@ -103,12 +103,10 @@ export function containsNumber(array: number[]) {
 export function combineAllValues(obj: any) {
     let result: number[] = [];
     for (let key in obj) {
-        if (obj.hasOwnProperty(key)) {  // Check to ensure the key is a property of the object, not from the prototype chain
-            for (let i = 0; i < obj[key].length; i++) {  // Iterate and push each element in the array from each property
-                result = [...result, (obj[key][i])]
+         if (obj.hasOwnProperty(key)) {  // Check to ensure the key is a property of the object, not from the prototype chain
+            result = result.concat(obj[key]);  // Concatenate the array from each property into the result array
         }
     }
-}
     return result;
 }
 
