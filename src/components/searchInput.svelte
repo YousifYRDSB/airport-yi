@@ -7,11 +7,12 @@
 
 	const toastStore = getToastStore();
 
-	export let data: any;
-	export let searchedIndexes: Writable<number[]>;
-	export let performanceData: Writable<any>;
-	export let selectedAirport: Writable<number[]>;
-	export let calculatedDistance: Writable<number[]>
+	export let data: any; // data of the airports 
+	export let searchedIndexes: Writable<number[]>; // stores the indexes of the airports based on the search parameters 
+	export let performanceData: Writable<any>; // the performance/time of running the search 
+	export let selectedAirport: Writable<number[]>; //stores the selected airports to be used as chips  
+	export let calculatedDistance: Writable<number[]> // stores the distances between the airports 
+
 
 	let searchInput: string = '' 
 	let searchType: string = "id";
@@ -19,6 +20,7 @@
 
 	let usedAirports: any[] = []; //the airports that will be transfer points when going from airport a to airport b 
 
+	// searches for the input airport based on search type 
 	async function searchAirport(query: string, searchType: string) {
 		let searchedIndex: number[] = [];
 
@@ -31,20 +33,22 @@
 		searchedIndex = data.sortedTypes[query];
 		else if(searchType == "country")
 		searchedIndex = data.sortedCountries[query];
+		
+		// logs the performance time 
 		const endTime = performance.now();
-
 		const elapsedTime = (endTime - startTime);
-		let performanceTemp = [...$performanceData]
-		console.log(performanceTemp)
-		performanceTemp[1] = [...performanceTemp[1], elapsedTime]
-		performanceTemp[0] = [...performanceTemp[0], "search"]
-		performanceData.set(performanceTemp)
-		console.log(performanceTemp)
+		let performanceTemp = [...$performanceData];
+		console.log(performanceTemp);
+		performanceTemp[1] = [...performanceTemp[1], elapsedTime];
+		performanceTemp[0] = [...performanceTemp[0], "search"];
+		performanceData.set(performanceTemp);
+		console.log(performanceTemp);
 		searchedIndexes.set(searchedIndex);
 	}
 
 
-	function calculateDistance(indices: number[]): number[] {
+// calculates the distance between airports (bonus 1 and 2)
+function calculateDistance(indices: number[]): number[] {
     const latIndex: number = 0;
     const lonIndex: number = 1;
     let totalDistance: number = 0;
