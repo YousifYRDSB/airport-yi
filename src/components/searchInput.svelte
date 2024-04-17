@@ -32,6 +32,7 @@
 		const endTime = performance.now();
 
 		const elapsedTime = (endTime - startTime);
+
 		let performanceTemp = [...$performanceData]
 		console.log(performanceTemp)
 		performanceTemp[1] = [...performanceTemp[1], elapsedTime]

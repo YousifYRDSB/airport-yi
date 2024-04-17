@@ -10,19 +10,15 @@
 	import { writable } from 'svelte/store';
 	import PerformanceLog from '../components/showPerformance.svelte'
 
-console.log('test')
-
+	
     /** @type {import('./$types').LayoutData} */
 	export let data:any;
-	// console.log(data.airports)
 	let searchedIndexes = writable([]);
 	let performanceData = writable(data.performance);
 	let selectedAirport = writable([])
 	let calculatedDistance = writable([])
-
-	$: console.log('Data updated', data);
-
- 
+	
+    $: data.performance = $performanceData
 
 				
 </script>

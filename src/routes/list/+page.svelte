@@ -2,6 +2,7 @@
     import Table from '../../components/table.svelte';
 	//import {orderAirports} from "../../functions/sort-search"; 
     import { reverseArray, combineAllValues } from '../../functions/data-operations';
+    import PerformanceLog from '../../components/showPerformance.svelte'
     export let data:any;
     let sortedIndexes: number[] = data.sortedNames
     let selectedCategory: string = '';
@@ -36,6 +37,7 @@
 
 
  <p class="title"> ALL AIRPORTS </p> 
+ <PerformanceLog performanceData={data.performance}/>
 
     <div class="buttons">
         <!-- <button type="button" class="button btn variant-filled"><img src="https://cdn2.iconfinder.com/data/icons/4web-3/139/sort3-512.png" alt="button"/></button> -->
