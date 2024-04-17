@@ -1,3 +1,7 @@
+<!--Uses D3.js to paint world map, and to visualize data,
+boilerplate and docs used from https://www.d3indepth.com/geographic/ as a starting point-->
+
+
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import * as d3 from 'd3';

@@ -98,6 +98,8 @@ export function containsNumber(array: number[]) {
  *
  * @param {any} obj - The object whose values will be combined.
  * 
+ * FROM GPT-4
+ * 
  * combineAllValues() is O(n)
  */
 export function combineAllValues(obj: any) {

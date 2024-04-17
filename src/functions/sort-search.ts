@@ -17,7 +17,11 @@ function arrayPush<T>(arg: T, arr: T[]): T[] {
  * 
  * This particular function is the starting function that takes the data and initializes an array of indices [1...i], as well as a buffer array
  * after which, it calls iterativeMergeSort, which calls merge
- * **This implementation uses double buffering, which is a tradeoff of space complexity (S(2n), extra copy) in turn for reduced array writes, time complexity is still O(nlogn)
+ * **This implementation uses double buffering, which reduces array writes, time complexity is still O(nlogn)
+ * It removes the need for a left and right array, and  however, the buffer is a copy of the entire index array of data
+ * 
+ * About double buffering (typically used for rendering graphics): https://gameprogrammingpatterns.com/double-buffer.html
+ * 
  * 
  * this function is O(n) + recurseMergeSort()
  */
@@ -52,7 +56,7 @@ export function mergeSort<T>(arr: T[]): number[] {
  * 
  * recursive function splits the array into 2 (DAC), and merges the results at each level of recursion
  * the dest and src parameters are also reversed here in the recursive calls, as per the double buffer implementation
- * recurseMergeSort() is O(nlogn) + merge()
+ * recurseMergeSort() is O(logn) + merge()
  */
 function recurseMergeSort<T>(arr: T[], src: number[], dest: number[], start: number, end: number) {
   if (start >= end) return;  // Base case: a single element or no element

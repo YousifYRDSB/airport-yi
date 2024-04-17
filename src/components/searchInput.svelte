@@ -17,6 +17,7 @@
 	let searchInput: string = '' 
 	let searchType: string = "id";
 	let selectedMode = "getDistance"
+	let nTransfers = 2;
 
 	
 
@@ -122,7 +123,7 @@ function calculateDistance(indices: number[]): number[] {
 			const info = calculateDistance($selectedAirport)
 		calculatedInfo.set(`distance is ${info[0].toFixed(0)} km, displacement is ${info[1].toFixed(0)} km`)
 		}
-		else calculatedInfo.set(computeDistance($selectedAirport[0], $selectedAirport[$selectedAirport.length - 1], 3))
+		else calculatedInfo.set(computeDistance($selectedAirport[0], $selectedAirport[$selectedAirport.length - 1], nTransfers))
 		}
 	}
 
@@ -248,7 +249,10 @@ function calculateDistance(indices: number[]): number[] {
 		<select bind:value={selectedMode} class="ml-4 bg-gray-800 text-white border border-gray-600 rounded-md shadow focus:ring-blue-500 focus:border-blue-500 p-2">
 			<option value="getDistance">Get Flight Distances</option>
 			<option value="flyFrugal">© Fly Frugal</option>
-		</select>		
+		</select>	
+		{#if selectedMode == "flyFrugal"}
+		<input class="border px-4 py-2 text-black" type="number" placeholder="# transfers" bind:value={nTransfers} />	
+		{/if}
         <div class="flex flex-wrap">
             {#each $selectedAirport as airport}
                 <button on:click={() => deleteSelection(airport)} class="chip variant-filled m-1">{data.airports.name[airport]} &nbsp; X</button>
